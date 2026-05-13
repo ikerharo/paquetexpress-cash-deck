@@ -65,14 +65,59 @@
   .pdf-page {
     width: 297mm;
     min-height: 210mm;
-    margin: 0 auto;
+    margin: 0 auto 24px;
     background: var(--paper);
     padding: 18mm 20mm;
     box-shadow: 0 4px 20px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
     position: relative;
     font-size: 10.5px;
     line-height: 1.5;
+    display: flex;
+    flex-direction: column;
   }
+  .pdf-page > .pdf-footer { margin-top: auto; }
+
+  /* Continuation header (for pages 2+) */
+  .cont-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 22px;
+    gap: 12px;
+  }
+  .cont-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+  .cont-name {
+    font-family: 'Geist', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--uv-green);
+    letter-spacing: -0.02em;
+  }
+  .cont-sep {
+    color: var(--rule);
+    font-size: 12px;
+  }
+  .cont-doc {
+    font-size: 10.5px;
+    color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .cont-right {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+  .cont-right strong { color: var(--ink); font-weight: 500; }
 
   @page {
     size: A4 landscape;
@@ -555,12 +600,13 @@
     letter-spacing: -0.012em;
   }
 
-  /* ===== Pivot grid (sin bordes — separación por whitespace) ===== */
+  /* ===== Pivot grid (sin bordes — pivotes arriba, charts abajo) ===== */
   .pivot-grid {
     display: grid;
-    grid-template-columns: 1.05fr 1fr;
-    gap: 28px 32px;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
     margin-bottom: 8px;
+    align-items: start;
   }
   .pivot-card, .chart-card {
     display: flex;
@@ -816,7 +862,7 @@
   </h2>
 
   <div class="pivot-grid">
-    <!-- Row 1: pivot A + bar chart -->
+    <!-- Row 1: two pivot tables -->
     <div class="pivot-card">
       <div class="pivot-title">Categoría × Estatus de viaje</div>
       <table class="pivot">
@@ -869,6 +915,53 @@
       </table>
     </div>
 
+    <div class="pivot-card">
+      <div class="pivot-title">Categoría × Estatus de facturación</div>
+      <table class="pivot">
+        <thead>
+          <tr>
+            <th>Categoría</th>
+            <th class="num">Con factura SAT</th>
+            <th class="num">Sin factura</th>
+            <th class="num tot">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Combustible</td>
+            <td class="num">$7,000</td>
+            <td class="num">$18,500</td>
+            <td class="num tot">$25,500</td>
+          </tr>
+          <tr>
+            <td>Peajes y estac.</td>
+            <td class="num">$1,432</td>
+            <td class="num">$6,789</td>
+            <td class="num tot">$8,221</td>
+          </tr>
+          <tr>
+            <td>Alimentos</td>
+            <td class="num">$0</td>
+            <td class="num">$3,200</td>
+            <td class="num tot">$3,200</td>
+          </tr>
+          <tr>
+            <td>Caseta (efectivo)</td>
+            <td class="num">$0</td>
+            <td class="num">$1,300</td>
+            <td class="num tot">$1,300</td>
+          </tr>
+          <tr class="grand">
+            <td>TOTAL</td>
+            <td class="num">$8,432</td>
+            <td class="num">$29,789</td>
+            <td class="num tot">$38,221</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Row 2: two charts -->
     <div class="chart-card">
       <div class="chart-title">Gasto por categoría · segmentado por estatus de viaje</div>
       <div class="bars">
@@ -924,53 +1017,6 @@
       </div>
     </div>
 
-    <!-- Row 2: pivot B + donut chart -->
-    <div class="pivot-card">
-      <div class="pivot-title">Categoría × Estatus de facturación</div>
-      <table class="pivot">
-        <thead>
-          <tr>
-            <th>Categoría</th>
-            <th class="num">Con factura SAT</th>
-            <th class="num">Sin factura</th>
-            <th class="num tot">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Combustible</td>
-            <td class="num">$7,000</td>
-            <td class="num">$18,500</td>
-            <td class="num tot">$25,500</td>
-          </tr>
-          <tr>
-            <td>Peajes y estac.</td>
-            <td class="num">$1,432</td>
-            <td class="num">$6,789</td>
-            <td class="num tot">$8,221</td>
-          </tr>
-          <tr>
-            <td>Alimentos</td>
-            <td class="num">$0</td>
-            <td class="num">$3,200</td>
-            <td class="num tot">$3,200</td>
-          </tr>
-          <tr>
-            <td>Caseta (efectivo)</td>
-            <td class="num">$0</td>
-            <td class="num">$1,300</td>
-            <td class="num tot">$1,300</td>
-          </tr>
-          <tr class="grand">
-            <td>TOTAL</td>
-            <td class="num">$8,432</td>
-            <td class="num">$29,789</td>
-            <td class="num tot">$38,221</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
     <div class="chart-card">
       <div class="chart-title">Deducibilidad real del periodo</div>
       <div class="donut-wrap">
@@ -994,6 +1040,28 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Footer page 1 -->
+  <div class="pdf-footer">
+    <span>Documento generado por <strong>Uvicuo</strong> · Confidencial · Solo uso interno y auditoría</span>
+    <span>Página 1 de 3 · Carátula · RPT-2026-04-MOC-001</span>
+  </div>
+
+</div>
+
+<!-- ===================== PAGE 2 ===================== -->
+<div class="pdf-page">
+
+  <!-- Continuation header (simpler than cover) -->
+  <div class="cont-header">
+    <div class="cont-left">
+      <div class="uvicuo-mark"></div>
+      <span class="cont-name">uvícuo</span>
+      <span class="cont-sep">·</span>
+      <span class="cont-doc">Reporte de gastos · Los Mochis · 01 abr — 30 abr 2026</span>
+    </div>
+    <div class="cont-right"><strong>RPT-2026-04-MOC-001</strong> · pag. 2 de 3</div>
   </div>
 
   <!-- Detalle -->
@@ -1138,10 +1206,10 @@
     </tbody>
   </table>
 
-  <!-- Footer -->
+  <!-- Footer page 2 -->
   <div class="pdf-footer">
     <span>Documento generado por <strong>Uvicuo</strong> · Confidencial · Solo uso interno y auditoría</span>
-    <span>Página 1 de 3 · RPT-2026-04-MOC-001</span>
+    <span>Página 2 de 3 · Detalle · RPT-2026-04-MOC-001</span>
   </div>
 
 </div>
@@ -1160,6 +1228,7 @@
       </ul>
     </li>
     <li><strong>Gráficas prototipo del dashboard V2</strong>: barra apilada por categoría (proporción + magnitud) y donut de deducibilidad. La idea es validar el visual aquí antes de construirlo en la app.</li>
+    <li><strong>Página 1 = carátula</strong>: brand + hero + resumen (pivotes + gráficas) en una sola hoja. <strong>Página 2 = detalle</strong>: tabla plana de gastos con continuation header sutil. Tres páginas estimadas para 76 gastos.</li>
     <li><strong>Detalle</strong>: tabla plana, una línea por gasto, ordenada por fecha descendente. 7 columnas. Incluye fila con folio fiscal cancelado para mostrar el edge case (T-04 AC).</li>
     <li><span class="open">Por definir</span> Cantidad de filas por página antes de paginar (mockup muestra 12; real ~25-30 por página A4 horizontal).</li>
     <li><span class="open">Por validar con Auditoría interna y Tesorería</span> Si las dos tablas pivote propuestas son las correctas, o sugieren otras intersecciones.</li>
