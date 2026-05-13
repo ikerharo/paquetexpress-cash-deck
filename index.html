@@ -705,6 +705,30 @@
     justify-content: space-between;
     gap: 16px;
   }
+  .card-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    align-self: stretch;
+    transition: color 200ms ease;
+  }
+  .card-link:hover { color: var(--accent-deep); }
+  .card-link .arrow {
+    font-size: 14px;
+    transition: transform 200ms ease;
+    transform: translateX(0);
+  }
+  .card-link:hover .arrow { transform: translateX(3px); }
 
   /* ============== SLIDE 10 — AUTOAPROBACIÓN ============== */
   .s-auto .slide-body { gap: 3vh; }
@@ -1554,6 +1578,9 @@
         <div class="num">i.</div>
         <div class="name">PDF imprimible del periodo</div>
         <div class="desc">Sustituye la Orden de Compra impresa de Oracle como soporte físico — para anexar a póliza, presentar a auditoría o sustentar tesorería. Empaqueta la información clave de cada gasto, incluido el folio fiscal SAT. <em>Qué columnas caben en la hoja se afina con el cliente.</em></div>
+        <a class="card-link" href="pdf-mockup.html" target="_blank" rel="noopener">
+          Ver mockup interactivo <span class="arrow">→</span>
+        </a>
       </div>
       <div class="build-card big">
         <div class="head-row">
