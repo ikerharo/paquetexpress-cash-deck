@@ -145,16 +145,40 @@
     letter-spacing: -0.015em;
     line-height: 1.1;
   }
-  .period-pill {
+  .pill-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-end;
+  }
+  .period-pill, .gen-pill {
     font-family: 'Geist Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.06em;
     color: var(--ink);
-    background: var(--uv-green-soft);
-    border: 1px solid var(--uv-green);
     padding: 4px 10px;
     border-radius: 3px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
   }
+  .period-pill {
+    background: var(--uv-green-soft);
+    border: 1px solid var(--uv-green);
+  }
+  .gen-pill {
+    background: #fff;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+  }
+  .pill-lbl {
+    font-size: 8.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .period-pill .pill-lbl { color: var(--uv-green-deep); }
 
   /* ===== Metadata line (simplified) ===== */
   .meta-line {
@@ -472,6 +496,268 @@
     margin-right: 4px;
   }
   @media print { .annotations { display: none; } }
+
+  /* ===== Hero bar (full-width) ===== */
+  .hero-bar {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    background: linear-gradient(135deg, var(--uv-green) 0%, var(--uv-green-deep) 100%);
+    color: white;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    align-items: center;
+    gap: 24px;
+    box-shadow: 0 2px 6px rgba(0, 138, 49, 0.15);
+  }
+  .hero-block { display: flex; flex-direction: column; gap: 3px; }
+  .hero-k {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.88;
+    font-weight: 500;
+  }
+  .hero-v {
+    font-family: 'Geist', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    margin-top: 2px;
+  }
+  .hero-sub {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    opacity: 0.9;
+    margin-top: 4px;
+  }
+  .hero-sub strong { font-weight: 600; color: white; }
+  .hero-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .stat-mini {
+    background: rgba(255, 255, 255, 0.13);
+    padding: 8px 10px 9px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border-left: 2px solid rgba(255, 255, 255, 0.45);
+  }
+  .stat-k {
+    font-family: 'Geist Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+  .stat-v {
+    font-size: 17px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.05;
+  }
+
+  /* ===== Pivot grid ===== */
+  .pivot-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  .pivot-card, .chart-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 10px 12px 12px;
+    display: flex;
+    flex-direction: column;
+  }
+  .pivot-title, .chart-title {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+
+  /* Pivot table */
+  .pivot {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .pivot thead th {
+    text-align: left;
+    font-family: 'Geist', sans-serif;
+    font-weight: 500;
+    font-size: 9.5px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    padding: 5px 6px 6px;
+    border-bottom: 1.5px solid var(--ink);
+    background: #fafbfc;
+  }
+  .pivot thead th.num { text-align: right; }
+  .pivot thead th.tot { background: var(--uv-green-soft); color: var(--uv-green-deep); }
+  .pivot tbody td {
+    padding: 5px 6px;
+    border-bottom: 1px solid var(--rule-soft);
+    color: var(--ink-soft);
+  }
+  .pivot td.num { text-align: right; font-family: 'Geist Mono', monospace; font-size: 10px; }
+  .pivot td.tot { background: var(--uv-green-soft); font-weight: 500; color: var(--ink); }
+  .pivot tr.grand td {
+    background: #f0f2f5;
+    font-weight: 600;
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1.5px solid var(--ink);
+    color: var(--ink);
+  }
+  .pivot tr.grand td.tot {
+    background: var(--uv-green);
+    color: white;
+  }
+  .v-fin-d { color: var(--hl-ok-ink); }
+  .v-cie-d { color: var(--ink); }
+  .v-act-d { color: var(--hl-pending-ink); }
+
+  /* Stacked bars chart */
+  .bars { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .bar-row {
+    display: grid;
+    grid-template-columns: 70px 1fr 56px;
+    gap: 8px;
+    align-items: center;
+  }
+  .bar-label {
+    font-size: 9.5px;
+    color: var(--ink);
+    font-weight: 500;
+    font-family: 'Geist', sans-serif;
+  }
+  .bar-wrap {
+    position: relative;
+    max-width: 100%;
+  }
+  .bar {
+    display: flex;
+    height: 12px;
+    background: var(--rule-soft);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .seg { display: block; height: 100%; }
+  .seg.fin { background: var(--hl-ok-ink); }
+  .seg.cie { background: #b8924a; }
+  .seg.act { background: var(--hl-pending-ink); }
+  .bar-tot {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9.5px;
+    color: var(--ink-soft);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .chart-legend {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .lg-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 9px;
+    color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .lg-sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .lg-sw.fin { background: var(--hl-ok-ink); }
+  .lg-sw.cie { background: #b8924a; }
+  .lg-sw.act { background: var(--hl-pending-ink); }
+
+  /* Donut chart */
+  .donut-wrap {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    padding: 4px 0;
+    flex: 1;
+  }
+  .donut {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: conic-gradient(var(--uv-green) 0% 22.1%, var(--muted-soft) 22.1% 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .donut::before {
+    content: "";
+    position: absolute;
+    inset: 13px;
+    background: white;
+    border-radius: 50%;
+  }
+  .donut-inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+  .donut-pct {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--uv-green-deep);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-family: 'Geist', sans-serif;
+  }
+  .donut-lbl {
+    font-family: 'Geist Mono', monospace;
+    font-size: 7.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+  .dl-item {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .dl-item:last-child { border-bottom: none; }
+  .dl-sw { width: 12px; height: 12px; border-radius: 2px; }
+  .dl-sw.fact { background: var(--uv-green); }
+  .dl-sw.nofact { background: var(--muted-soft); }
+  .dl-k { color: var(--ink); font-size: 9.5px; }
+  .dl-v {
+    font-family: 'Geist Mono', monospace;
+    color: var(--ink);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    font-size: 10px;
+  }
 </style>
 </head>
 <body>
@@ -494,15 +780,17 @@
       <div class="uvicuo-name">uvícuo</div>
     </div>
     <div class="doc-id">
-      <div><strong>Folio interno:</strong> RPT-2026-W19-MOC-001</div>
-      <div>Generado 08 may 2026 · 17:42</div>
+      <div><strong>Folio interno:</strong> RPT-2026-04-MOC-001</div>
     </div>
   </div>
 
   <!-- Title row -->
   <div class="title-row">
     <h1 class="report-title">Reporte de gastos — Operación logística Mochis</h1>
-    <div class="period-pill">Periodo: 11 feb 2026 — 08 may 2026</div>
+    <div class="pill-stack">
+      <div class="period-pill"><span class="pill-lbl">Periodo</span>01 abr — 30 abr 2026</div>
+      <div class="gen-pill"><span class="pill-lbl">Generado</span>05 may 2026 · 17:42</div>
+    </div>
   </div>
 
   <!-- Metadata: single line, generous breathing room -->
@@ -514,28 +802,213 @@
     <span><span class="lbl">Generado por</span> Javier Hernández</span>
   </div>
 
-  <!-- Summary: hero total + 2 cortes mínimos -->
-  <div class="summary-bar">
-    <!-- Hero -->
-    <div class="summary-block hero">
-      <div class="k">Total del periodo</div>
-      <div class="v">$38,221.80</div>
-      <div class="sub"><strong>25</strong> planes · <strong>76</strong> gastos · MXN</div>
+  <!-- Hero: total + 3 KPI mini -->
+  <div class="hero-bar">
+    <div class="hero-block">
+      <div class="hero-k">Total del periodo</div>
+      <div class="hero-v">$38,221.80</div>
+      <div class="hero-sub"><strong>25</strong> planes · <strong>76</strong> gastos · MXN</div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-mini">
+        <span class="stat-k">Deducibilidad real</span>
+        <span class="stat-v">22.1%</span>
+      </div>
+      <div class="stat-mini">
+        <span class="stat-k">Reembolsable</span>
+        <span class="stat-v">$23,000</span>
+      </div>
+      <div class="stat-mini">
+        <span class="stat-k">En curso</span>
+        <span class="stat-v">$15,222</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resumen: pivots + charts -->
+  <h2 class="section">
+    Resumen del periodo
+    <span class="hint">Tablas pivote · Base de las gráficas del dashboard V2</span>
+  </h2>
+
+  <div class="pivot-grid">
+    <!-- Row 1: pivot A + bar chart -->
+    <div class="pivot-card">
+      <div class="pivot-title">Categoría × Estatus de viaje</div>
+      <table class="pivot">
+        <thead>
+          <tr>
+            <th>Categoría</th>
+            <th class="num"><span class="v-fin-d">Finalizado</span></th>
+            <th class="num"><span class="v-cie-d">En cierre</span></th>
+            <th class="num"><span class="v-act-d">Activo</span></th>
+            <th class="num tot">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Combustible</td>
+            <td class="num">$10,000</td>
+            <td class="num">$6,500</td>
+            <td class="num">$9,000</td>
+            <td class="num tot">$25,500</td>
+          </tr>
+          <tr>
+            <td>Peajes y estac.</td>
+            <td class="num">$1,500</td>
+            <td class="num">$2,500</td>
+            <td class="num">$4,221</td>
+            <td class="num tot">$8,221</td>
+          </tr>
+          <tr>
+            <td>Alimentos</td>
+            <td class="num">$700</td>
+            <td class="num">$1,000</td>
+            <td class="num">$1,500</td>
+            <td class="num tot">$3,200</td>
+          </tr>
+          <tr>
+            <td>Caseta (efectivo)</td>
+            <td class="num">$800</td>
+            <td class="num">$0</td>
+            <td class="num">$500</td>
+            <td class="num tot">$1,300</td>
+          </tr>
+          <tr class="grand">
+            <td>TOTAL</td>
+            <td class="num">$13,000</td>
+            <td class="num">$10,000</td>
+            <td class="num">$15,221</td>
+            <td class="num tot">$38,221</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- Por estatus facturación -->
-    <div class="summary-block">
-      <div class="k">Por estatus de facturación</div>
-      <div class="row-mini"><span class="dim-l">Con factura SAT</span><span class="num">$8,432.50</span></div>
-      <div class="row-mini"><span class="dim-l">Sin factura</span><span class="num">$29,789.30</span></div>
+    <div class="chart-card">
+      <div class="chart-title">Gasto por categoría · segmentado por estatus de viaje</div>
+      <div class="bars">
+        <div class="bar-row">
+          <span class="bar-label">Combustible</span>
+          <div class="bar-wrap" style="width: 100%">
+            <div class="bar">
+              <span class="seg fin" style="flex: 10000"></span>
+              <span class="seg cie" style="flex: 6500"></span>
+              <span class="seg act" style="flex: 9000"></span>
+            </div>
+          </div>
+          <span class="bar-tot">$25,500</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Peajes y estac.</span>
+          <div class="bar-wrap" style="width: 32.2%">
+            <div class="bar">
+              <span class="seg fin" style="flex: 1500"></span>
+              <span class="seg cie" style="flex: 2500"></span>
+              <span class="seg act" style="flex: 4221"></span>
+            </div>
+          </div>
+          <span class="bar-tot">$8,221</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Alimentos</span>
+          <div class="bar-wrap" style="width: 12.5%">
+            <div class="bar">
+              <span class="seg fin" style="flex: 700"></span>
+              <span class="seg cie" style="flex: 1000"></span>
+              <span class="seg act" style="flex: 1500"></span>
+            </div>
+          </div>
+          <span class="bar-tot">$3,200</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Caseta</span>
+          <div class="bar-wrap" style="width: 5.1%">
+            <div class="bar">
+              <span class="seg fin" style="flex: 800"></span>
+              <span class="seg cie" style="flex: 0"></span>
+              <span class="seg act" style="flex: 500"></span>
+            </div>
+          </div>
+          <span class="bar-tot">$1,300</span>
+        </div>
+        <div class="chart-legend">
+          <span class="lg-item"><span class="lg-sw fin"></span>Finalizado</span>
+          <span class="lg-item"><span class="lg-sw cie"></span>En cierre</span>
+          <span class="lg-item"><span class="lg-sw act"></span>Activo</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Por estatus viaje -->
-    <div class="summary-block">
-      <div class="k">Por estatus de viaje</div>
-      <div class="row-mini"><span class="dim-l v-fin">Finalizado</span><span class="num">$13,000.00</span></div>
-      <div class="row-mini"><span class="dim-l v-cie">En cierre</span><span class="num">$10,000.00</span></div>
-      <div class="row-mini"><span class="dim-l v-act">Activo</span><span class="num">$15,221.80</span></div>
+    <!-- Row 2: pivot B + donut chart -->
+    <div class="pivot-card">
+      <div class="pivot-title">Categoría × Estatus de facturación</div>
+      <table class="pivot">
+        <thead>
+          <tr>
+            <th>Categoría</th>
+            <th class="num">Con factura SAT</th>
+            <th class="num">Sin factura</th>
+            <th class="num tot">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Combustible</td>
+            <td class="num">$7,000</td>
+            <td class="num">$18,500</td>
+            <td class="num tot">$25,500</td>
+          </tr>
+          <tr>
+            <td>Peajes y estac.</td>
+            <td class="num">$1,432</td>
+            <td class="num">$6,789</td>
+            <td class="num tot">$8,221</td>
+          </tr>
+          <tr>
+            <td>Alimentos</td>
+            <td class="num">$0</td>
+            <td class="num">$3,200</td>
+            <td class="num tot">$3,200</td>
+          </tr>
+          <tr>
+            <td>Caseta (efectivo)</td>
+            <td class="num">$0</td>
+            <td class="num">$1,300</td>
+            <td class="num tot">$1,300</td>
+          </tr>
+          <tr class="grand">
+            <td>TOTAL</td>
+            <td class="num">$8,432</td>
+            <td class="num">$29,789</td>
+            <td class="num tot">$38,221</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Deducibilidad real del periodo</div>
+      <div class="donut-wrap">
+        <div class="donut">
+          <div class="donut-inner">
+            <div class="donut-pct">22.1%</div>
+            <div class="donut-lbl">Con factura</div>
+          </div>
+        </div>
+        <div class="donut-legend">
+          <div class="dl-item">
+            <span class="dl-sw fact"></span>
+            <span class="dl-k">Con factura SAT</span>
+            <span class="dl-v">$8,432</span>
+          </div>
+          <div class="dl-item">
+            <span class="dl-sw nofact"></span>
+            <span class="dl-k">Sin factura</span>
+            <span class="dl-v">$29,789</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -547,13 +1020,12 @@
 
   <table class="detalle">
     <colgroup>
-      <col style="width: 10%" /><!-- fecha -->
-      <col style="width: 12%" /><!-- categoría -->
-      <col style="width: 14%" /><!-- empleado -->
-      <col style="width: 16%" /><!-- plan / ruta -->
+      <col style="width: 11%" /><!-- fecha -->
+      <col style="width: 13%" /><!-- categoría -->
+      <col style="width: 15%" /><!-- empleado -->
+      <col style="width: 17%" /><!-- plan / ruta -->
       <col style="width: 10%" /><!-- monto -->
-      <col style="width: 7%" /><!-- factura -->
-      <col style="width: 21%" /><!-- folio SAT -->
+      <col style="width: 24%" /><!-- folio SAT -->
       <col style="width: 10%" /><!-- estatus viaje -->
     </colgroup>
     <thead>
@@ -563,134 +1035,121 @@
         <th>Empleado</th>
         <th>Plan · Ruta</th>
         <th class="num">Monto</th>
-        <th>Factura</th>
         <th>Folio fiscal SAT</th>
         <th>Estatus viaje</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td class="mono">07/05/26 13:40</td>
+        <td class="mono">30/04/26 19:24</td>
         <td>Caseta</td>
         <td>Rocío Cruz</td>
         <td>#4710 · CDMX → GDL</td>
         <td class="num">$200.00</td>
-        <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-act">Activo</td>
       </tr>
       <tr class="zebra">
-        <td class="mono">07/05/26 09:48</td>
+        <td class="mono">30/04/26 09:48</td>
         <td>Combustible</td>
         <td>Sebastián G.</td>
         <td>#5341 · CHIH → MOCH</td>
         <td class="num">$1,438.65</td>
-        <td class="ck">Sí</td>
         <td class="mono ok">c23821bc-dd4d-4d64-80e9-6af7eddd9217</td>
         <td class="v-fin">Finalizado</td>
       </tr>
       <tr>
-        <td class="mono">07/05/26 08:37</td>
+        <td class="mono">29/04/26 18:12</td>
         <td>Combustible</td>
-        <td>Rocío Cruz</td>
-        <td>#4710 · CDMX → GDL</td>
-        <td class="num">$817.30</td>
-        <td class="ck no">No</td>
-        <td class="mono dim">—</td>
-        <td class="v-act">Activo</td>
+        <td>Raúl G. Estrada</td>
+        <td>#4892 · GDL → MTY</td>
+        <td class="num">$1,820.00</td>
+        <td class="mono ok">5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b <span class="uid-cancel">cancelada</span></td>
+        <td class="v-cie">En cierre</td>
       </tr>
       <tr class="zebra">
-        <td class="mono">06/05/26 14:02</td>
+        <td class="mono">28/04/26 14:02</td>
         <td>Alimentos</td>
         <td>Pablo Flores</td>
         <td>#5234 · MTY → MOCH</td>
         <td class="num">$340.50</td>
-        <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-fin">Finalizado</td>
       </tr>
       <tr>
-        <td class="mono">06/05/26 06:14</td>
+        <td class="mono">28/04/26 06:14</td>
         <td>Combustible</td>
         <td>Pablo Flores</td>
         <td>#5234 · MTY → MOCH</td>
         <td class="num">$2,184.30</td>
-        <td class="ck">Sí</td>
         <td class="mono ok">b3a2c1d0-9876-5432-1abc-def012345678</td>
         <td class="v-fin">Finalizado</td>
       </tr>
       <tr class="zebra">
-        <td class="mono">05/05/26 12:23</td>
+        <td class="mono">27/04/26 12:23</td>
         <td>Peajes y estac.</td>
         <td>Raúl G. Estrada</td>
         <td>#4892 · GDL → MTY</td>
         <td class="num">$1,729.50</td>
-        <td class="ck">Sí</td>
         <td class="mono ok">7c8b9a0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d</td>
         <td class="v-cie">En cierre</td>
       </tr>
       <tr>
-        <td class="mono">05/05/26 08:59</td>
+        <td class="mono">26/04/26 08:59</td>
         <td>Combustible</td>
         <td>Raúl G. Estrada</td>
         <td>#4892 · GDL → MTY</td>
         <td class="num">$1,596.25</td>
-        <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-cie">En cierre</td>
       </tr>
       <tr class="zebra">
-        <td class="mono">05/05/26 05:35</td>
+        <td class="mono">25/04/26 05:35</td>
         <td>Peajes y estac.</td>
         <td>Diego Galico</td>
         <td>#4583 · CDMX interna</td>
         <td class="num">$116.00</td>
-        <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-act">Activo</td>
       </tr>
       <tr>
-        <td class="mono">04/05/26 21:12</td>
+        <td class="mono">22/04/26 21:12</td>
         <td>Combustible</td>
         <td>Raúl G. Estrada</td>
         <td>#4892 · GDL → MTY</td>
         <td class="num">$1,322.11</td>
-        <td class="ck">Sí</td>
         <td class="mono ok">a1b2c3d4-e5f6-7890-abcd-1234567890ef</td>
         <td class="v-cie">En cierre</td>
       </tr>
       <tr class="zebra">
-        <td class="mono">04/05/26 10:25</td>
+        <td class="mono">19/04/26 10:25</td>
         <td>Peajes y estac.</td>
         <td>Diego Galico</td>
         <td>#4583 · CDMX interna</td>
         <td class="num">$12.00</td>
-        <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-act">Activo</td>
       </tr>
       <tr>
-        <td class="mono">02/05/26 07:40</td>
+        <td class="mono">15/04/26 07:40</td>
         <td>Peajes y estac.</td>
         <td>Diego Galico</td>
         <td>#4583 · CDMX interna</td>
         <td class="num">$32.03</td>
-        <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-act">Activo</td>
       </tr>
       <tr class="zebra">
-        <td class="mono">23/02/26 23:52</td>
+        <td class="mono">03/04/26 23:52</td>
         <td>Combustible</td>
         <td>Santiago Merino</td>
         <td>#5103 · SLP → MTY</td>
         <td class="num">$700.00</td>
-        <td class="ck">Sí</td>
         <td class="mono ok">f9e8d7c6-b5a4-3210-fedc-ba0987654321</td>
         <td class="v-fin">Finalizado</td>
       </tr>
       <tr class="more">
-        <td colspan="8">64 gastos adicionales · ver páginas siguientes</td>
+        <td colspan="7">64 gastos adicionales · ver páginas siguientes</td>
       </tr>
     </tbody>
   </table>
@@ -698,22 +1157,29 @@
   <!-- Footer -->
   <div class="pdf-footer">
     <span>Documento generado por <strong>Uvicuo</strong> · Confidencial · Solo uso interno y auditoría</span>
-    <span>Página 1 de 5 · RPT-2026-W19-MOC-001</span>
+    <span>Página 1 de 3 · RPT-2026-04-MOC-001</span>
   </div>
 
 </div>
 
 <!-- ===================== Annotations (screen only) ===================== -->
 <div class="annotations">
-  <h3>Notas sobre este mockup V1 (versión simplificada)</h3>
-  <p>Este PDF reemplaza la Orden de Compra impresa de Oracle. Versión simplificada — solo lo mínimo viable:</p>
+  <h3>Notas sobre este mockup V1</h3>
+  <p>PDF mensual del periodo. Reemplaza la Orden de Compra impresa de Oracle como soporte físico de auditoría y tesorería. Estructura:</p>
   <ul>
-    <li><strong>Encabezado en una línea</strong>: sucursal · planes creados por · generado por (T-02 cubierto). Periodo en el pill al lado del título. Sin tabla de metadata.</li>
-    <li><strong>Resumen</strong>: total del periodo + 2 cortes (facturación y viaje). Sin "por categoría" — se infiere del detalle. Sin métricas derivadas — viven en V2 dashboard.</li>
-    <li><strong>Detalle</strong>: tabla plana, una línea por gasto, ordenada por fecha descendente. Sin sub-encabezados por estatus de viaje — el estatus va como columna en cada fila. 8 columnas. Estilo CSV.</li>
-    <li><span class="open">Por definir</span> Cantidad de filas por página antes de paginar (mockup muestra 7+5; real ~25-30 por página A4 horizontal).</li>
-    <li><span class="open">Por definir</span> Si Tesorería quiere el detalle completo o un export aparte cuando supere N páginas.</li>
-    <li><span class="open">Por validar con Auditoría interna y Tesorería</span> Si este resumen es suficiente o piden algún corte más.</li>
+    <li><strong>Header</strong>: brand + folio interno · título + dos pills (periodo / fecha de generación) · línea de metadata (sucursal · planes creados por · generado por). T-02 cubierto.</li>
+    <li><strong>Hero</strong>: total del periodo + 3 KPIs derivados (deducibilidad real, monto reembolsable, monto en curso).</li>
+    <li><strong>Resumen del periodo · tablas pivote</strong> — base de las gráficas del dashboard V2, prototipadas aquí:
+      <ul>
+        <li><em>Categoría × Estatus de viaje</em>: cuánto de cada categoría es reembolsable (Yolanda / Tesorería).</li>
+        <li><em>Categoría × Estatus de facturación</em>: qué categorías están timbradas (Christopher / fiscal). Permite ver que Alimentos y Caseta en efectivo no aportan deducibilidad.</li>
+      </ul>
+    </li>
+    <li><strong>Gráficas prototipo del dashboard V2</strong>: barra apilada por categoría (proporción + magnitud) y donut de deducibilidad. La idea es validar el visual aquí antes de construirlo en la app.</li>
+    <li><strong>Detalle</strong>: tabla plana, una línea por gasto, ordenada por fecha descendente. 7 columnas. Incluye fila con folio fiscal cancelado para mostrar el edge case (T-04 AC).</li>
+    <li><span class="open">Por definir</span> Cantidad de filas por página antes de paginar (mockup muestra 12; real ~25-30 por página A4 horizontal).</li>
+    <li><span class="open">Por validar con Auditoría interna y Tesorería</span> Si las dos tablas pivote propuestas son las correctas, o sugieren otras intersecciones.</li>
+    <li><span class="open">Por definir</span> Si V1 incluye las gráficas en el PDF o solo en el dashboard V2. Aquí están como mockup ilustrativo.</li>
   </ul>
 </div>
 
