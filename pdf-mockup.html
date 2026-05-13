@@ -635,6 +635,19 @@
     color: var(--muted);
     font-weight: 500;
     margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .chart-side {
+    color: var(--muted);
+  }
+  .chart-side strong {
+    color: var(--uv-green-deep);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0;
   }
 
   /* Pivot table */
@@ -707,6 +720,8 @@
   .seg.fin { background: #00702a; }   /* deep green */
   .seg.cie { background: #4fbf7c; }   /* mid green */
   .seg.act { background: #c3dcc8; }   /* pale green */
+  .seg.fact { background: #00702a; }   /* same deep green as fin */
+  .seg.nofact { background: #e4e7eb; } /* neutral gray */
   .bar-tot {
     font-family: 'Geist Mono', monospace;
     font-size: 9.5px;
@@ -734,6 +749,8 @@
   .lg-sw.fin { background: #00702a; }
   .lg-sw.cie { background: #4fbf7c; }
   .lg-sw.act { background: #c3dcc8; }
+  .lg-sw.fact { background: #00702a; }
+  .lg-sw.nofact { background: #e4e7eb; }
 
   /* Donut chart */
   .donut-wrap {
@@ -1037,25 +1054,51 @@
     </div>
 
     <div class="chart-card">
-      <div class="chart-title">Deducibilidad real del periodo</div>
-      <div class="donut-wrap">
-        <div class="donut">
-          <div class="donut-inner">
-            <div class="donut-pct">22.1%</div>
-            <div class="donut-lbl">Con factura</div>
+      <div class="chart-title">Gasto por categoría · segmentado por estatus de facturación <span class="chart-side">Deducibilidad real <strong>22.1%</strong></span></div>
+      <div class="bars">
+        <div class="bar-row">
+          <span class="bar-label">Combustible</span>
+          <div class="bar-wrap" style="width: 100%">
+            <div class="bar">
+              <span class="seg fact" style="flex: 7000"></span>
+              <span class="seg nofact" style="flex: 18500"></span>
+            </div>
           </div>
+          <span class="bar-tot">$25,500</span>
         </div>
-        <div class="donut-legend">
-          <div class="dl-item">
-            <span class="dl-sw fact"></span>
-            <span class="dl-k">Con factura SAT</span>
-            <span class="dl-v">$8,432</span>
+        <div class="bar-row">
+          <span class="bar-label">Peajes y estac.</span>
+          <div class="bar-wrap" style="width: 32.2%">
+            <div class="bar">
+              <span class="seg fact" style="flex: 1432"></span>
+              <span class="seg nofact" style="flex: 6789"></span>
+            </div>
           </div>
-          <div class="dl-item">
-            <span class="dl-sw nofact"></span>
-            <span class="dl-k">Sin factura</span>
-            <span class="dl-v">$29,789</span>
+          <span class="bar-tot">$8,221</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Alimentos</span>
+          <div class="bar-wrap" style="width: 12.5%">
+            <div class="bar">
+              <span class="seg fact" style="flex: 0"></span>
+              <span class="seg nofact" style="flex: 3200"></span>
+            </div>
           </div>
+          <span class="bar-tot">$3,200</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Caseta</span>
+          <div class="bar-wrap" style="width: 5.1%">
+            <div class="bar">
+              <span class="seg fact" style="flex: 0"></span>
+              <span class="seg nofact" style="flex: 1300"></span>
+            </div>
+          </div>
+          <span class="bar-tot">$1,300</span>
+        </div>
+        <div class="chart-legend">
+          <span class="lg-item"><span class="lg-sw fact"></span>Con factura SAT</span>
+          <span class="lg-item"><span class="lg-sw nofact"></span>Sin factura</span>
         </div>
       </div>
     </div>
