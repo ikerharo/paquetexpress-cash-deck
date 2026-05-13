@@ -156,40 +156,35 @@
     border-radius: 3px;
   }
 
-  /* ===== Metadata table ===== */
-  .meta-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 12px;
-    border: 1px solid var(--rule);
-    font-size: 10px;
-  }
-  .meta-table td {
-    padding: 6px 10px;
-    border: 1px solid var(--rule);
-    vertical-align: top;
-  }
-  .meta-table td.l {
-    background: #fafbfc;
-    width: 12%;
-    font-family: 'Geist Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.04em;
-    color: var(--muted);
-    text-transform: uppercase;
-    font-weight: 500;
-    text-align: right;
-  }
-  .meta-table td.v {
-    width: 21%;
+  /* ===== Metadata line (simplified) ===== */
+  .meta-line {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding: 8px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    font-size: 10.5px;
     color: var(--ink);
   }
-  .meta-table td.v strong { font-weight: 500; }
+  .meta-line .lbl {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    margin-right: 4px;
+  }
+  .meta-line strong { font-weight: 500; }
+  .meta-line .sep { color: var(--muted-soft); margin: 0 4px; }
 
   /* ===== Hero total + summary in single bar ===== */
   .summary-bar {
     display: grid;
-    grid-template-columns: 1.05fr 1fr 1fr 1fr;
+    grid-template-columns: 1.1fr 1fr 1fr;
     gap: 0;
     background: var(--paper);
     border: 1px solid var(--rule);
@@ -510,27 +505,16 @@
     <div class="period-pill">Periodo: 11 feb 2026 — 08 may 2026</div>
   </div>
 
-  <!-- Metadata table -->
-  <table class="meta-table">
-    <tr>
-      <td class="l">Sucursal</td>
-      <td class="v"><strong>Los Mochis</strong> · Logística</td>
-      <td class="l">Categorías</td>
-      <td class="v">Combustible, Peajes y Estac., Casetas, Alimentos</td>
-      <td class="l">Método de pago</td>
-      <td class="v">Tarjeta + efectivo</td>
-    </tr>
-    <tr>
-      <td class="l">Estatus gastos</td>
-      <td class="v">Todos</td>
-      <td class="l">Planes creados por</td>
-      <td class="v"><strong>Javier Hernández</strong> (administrador de día)</td>
-      <td class="l">Generado por</td>
-      <td class="v">Javier Hernández</td>
-    </tr>
-  </table>
+  <!-- Metadata: single line, generous breathing room -->
+  <div class="meta-line">
+    <span><span class="lbl">Sucursal</span> <strong>Los Mochis</strong> · Logística</span>
+    <span class="sep">·</span>
+    <span><span class="lbl">Planes creados por</span> <strong>Javier Hernández</strong> · administrador de día</span>
+    <span class="sep">·</span>
+    <span><span class="lbl">Generado por</span> Javier Hernández</span>
+  </div>
 
-  <!-- Summary bar: hero total + 3 cortes simples -->
+  <!-- Summary: hero total + 2 cortes mínimos -->
   <div class="summary-bar">
     <!-- Hero -->
     <div class="summary-block hero">
@@ -539,21 +523,11 @@
       <div class="sub"><strong>25</strong> planes · <strong>76</strong> gastos · MXN</div>
     </div>
 
-    <!-- Por categoría -->
-    <div class="summary-block">
-      <div class="k">Por categoría</div>
-      <div class="row-mini"><span class="dim-l">Combustible</span><span class="num">$25,500.00</span></div>
-      <div class="row-mini"><span class="dim-l">Peajes y estacionamiento</span><span class="num">$8,221.80</span></div>
-      <div class="row-mini"><span class="dim-l">Alimentos y bebidas</span><span class="num">$3,200.00</span></div>
-      <div class="row-mini"><span class="dim-l">Casetas (efectivo)</span><span class="num">$1,300.00</span></div>
-    </div>
-
     <!-- Por estatus facturación -->
     <div class="summary-block">
       <div class="k">Por estatus de facturación</div>
-      <div class="row-mini"><span class="dim-l"><span class="accent">●</span> Con factura SAT</span><span class="num">$8,432.50</span></div>
+      <div class="row-mini"><span class="dim-l">Con factura SAT</span><span class="num">$8,432.50</span></div>
       <div class="row-mini"><span class="dim-l">Sin factura</span><span class="num">$29,789.30</span></div>
-      <div class="row-mini tot"><span class="dim-l">Deducibilidad real</span><span class="num">22.1%</span></div>
     </div>
 
     <!-- Por estatus viaje -->
@@ -562,7 +536,6 @@
       <div class="row-mini"><span class="dim-l v-fin">Finalizado</span><span class="num">$13,000.00</span></div>
       <div class="row-mini"><span class="dim-l v-cie">En cierre</span><span class="num">$10,000.00</span></div>
       <div class="row-mini"><span class="dim-l v-act">Activo</span><span class="num">$15,221.80</span></div>
-      <div class="row-mini tot"><span class="dim-l">Reembolsable (Fin+Cie)</span><span class="num">$23,000.00</span></div>
     </div>
   </div>
 
@@ -574,16 +547,14 @@
 
   <table class="detalle">
     <colgroup>
-      <col style="width: 9%" /><!-- fecha -->
-      <col style="width: 10%" /><!-- categoría -->
-      <col style="width: 12%" /><!-- empleado -->
-      <col style="width: 14%" /><!-- plan / ruta -->
-      <col style="width: 8%" /><!-- monto -->
-      <col style="width: 5%" /><!-- ticket -->
-      <col style="width: 5%" /><!-- factura -->
-      <col style="width: 17%" /><!-- folio SAT -->
-      <col style="width: 8%" /><!-- estatus viaje -->
-      <col style="width: 12%" /><!-- responsable -->
+      <col style="width: 10%" /><!-- fecha -->
+      <col style="width: 12%" /><!-- categoría -->
+      <col style="width: 14%" /><!-- empleado -->
+      <col style="width: 16%" /><!-- plan / ruta -->
+      <col style="width: 10%" /><!-- monto -->
+      <col style="width: 7%" /><!-- factura -->
+      <col style="width: 21%" /><!-- folio SAT -->
+      <col style="width: 10%" /><!-- estatus viaje -->
     </colgroup>
     <thead>
       <tr>
@@ -592,18 +563,16 @@
         <th>Empleado</th>
         <th>Plan · Ruta</th>
         <th class="num">Monto</th>
-        <th>Ticket</th>
         <th>Factura</th>
         <th>Folio fiscal SAT</th>
         <th>Estatus viaje</th>
-        <th>Responsable plan</th>
       </tr>
     </thead>
     <tbody>
 
       <!-- GROUP 1: Comprobables -->
       <tr class="group">
-        <td colspan="10">
+        <td colspan="8">
           <div class="gr-flex">
             <div class="gr-name"><span class="tag">Comprobables</span>Finalizado + En cierre</div>
             <div class="gr-stat"><strong>15 gastos</strong> · 15 planes · <strong>$23,000.00</strong></div>
@@ -618,10 +587,8 @@
         <td>#5103 · SLP → MTY</td>
         <td class="num">$700.00</td>
         <td class="ck">Sí</td>
-        <td class="ck">Sí</td>
         <td class="mono ok">f9e8d7c6-b5a4-3210-fedc-ba0987654321</td>
         <td class="v-fin">Finalizado</td>
-        <td>Christopher A.</td>
       </tr>
       <tr class="zebra">
         <td class="mono">04/05/26 21:12</td>
@@ -630,10 +597,8 @@
         <td>#4892 · GDL → MTY</td>
         <td class="num">$1,322.11</td>
         <td class="ck">Sí</td>
-        <td class="ck">Sí</td>
         <td class="mono ok">a1b2c3d4-e5f6-7890-abcd-1234567890ef</td>
         <td class="v-cie">En cierre</td>
-        <td>Coord. A · Mochis</td>
       </tr>
       <tr>
         <td class="mono">05/05/26 08:59</td>
@@ -641,11 +606,9 @@
         <td>Raúl G. Estrada</td>
         <td>#4892 · GDL → MTY</td>
         <td class="num">$1,596.25</td>
-        <td class="ck">Sí</td>
         <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-cie">En cierre</td>
-        <td>Coord. A · Mochis</td>
       </tr>
       <tr class="zebra">
         <td class="mono">05/05/26 12:23</td>
@@ -654,10 +617,8 @@
         <td>#4892 · GDL → MTY</td>
         <td class="num">$1,729.50</td>
         <td class="ck">Sí</td>
-        <td class="ck">Sí</td>
         <td class="mono ok">7c8b9a0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d</td>
         <td class="v-cie">En cierre</td>
-        <td>Coord. A · Mochis</td>
       </tr>
       <tr>
         <td class="mono">06/05/26 06:14</td>
@@ -666,10 +627,8 @@
         <td>#5234 · MTY → MOCH</td>
         <td class="num">$2,184.30</td>
         <td class="ck">Sí</td>
-        <td class="ck">Sí</td>
         <td class="mono ok">b3a2c1d0-9876-5432-1abc-def012345678</td>
         <td class="v-fin">Finalizado</td>
-        <td>Javier Hernández</td>
       </tr>
       <tr class="zebra">
         <td class="mono">06/05/26 14:02</td>
@@ -677,11 +636,9 @@
         <td>Pablo Flores</td>
         <td>#5234 · MTY → MOCH</td>
         <td class="num">$340.50</td>
-        <td class="ck">Sí</td>
         <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-fin">Finalizado</td>
-        <td>Javier Hernández</td>
       </tr>
       <tr>
         <td class="mono">07/05/26 09:48</td>
@@ -690,18 +647,16 @@
         <td>#5341 · CHIH → MOCH</td>
         <td class="num">$1,438.65</td>
         <td class="ck">Sí</td>
-        <td class="ck">Sí</td>
         <td class="mono ok">c23821bc-dd4d-4d64-80e9-6af7eddd9217</td>
         <td class="v-fin">Finalizado</td>
-        <td>Javier Hernández</td>
       </tr>
       <tr class="more">
-        <td colspan="10">8 gastos comprobables adicionales · ver páginas siguientes</td>
+        <td colspan="8">8 gastos comprobables adicionales · ver páginas siguientes</td>
       </tr>
 
       <!-- GROUP 2: En curso -->
       <tr class="group">
-        <td colspan="10">
+        <td colspan="8">
           <div class="gr-flex">
             <div class="gr-name"><span class="tag curso">En curso</span>Activo · pendiente de cierre</div>
             <div class="gr-stat"><strong>61 gastos</strong> · 10 planes · <strong>$15,221.80</strong></div>
@@ -716,10 +671,8 @@
         <td>#4583 · CDMX interna</td>
         <td class="num">$32.03</td>
         <td class="ck no">No</td>
-        <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-act">Activo</td>
-        <td>Javier Hernández</td>
       </tr>
       <tr class="zebra">
         <td class="mono">04/05/26 10:25</td>
@@ -728,10 +681,8 @@
         <td>#4583 · CDMX interna</td>
         <td class="num">$12.00</td>
         <td class="ck no">No</td>
-        <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-act">Activo</td>
-        <td>Javier Hernández</td>
       </tr>
       <tr>
         <td class="mono">05/05/26 05:35</td>
@@ -740,10 +691,8 @@
         <td>#4583 · CDMX interna</td>
         <td class="num">$116.00</td>
         <td class="ck no">No</td>
-        <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-act">Activo</td>
-        <td>Javier Hernández</td>
       </tr>
       <tr class="zebra">
         <td class="mono">07/05/26 08:37</td>
@@ -752,10 +701,8 @@
         <td>#4710 · CDMX → GDL</td>
         <td class="num">$817.30</td>
         <td class="ck no">No</td>
-        <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-act">Activo</td>
-        <td>Javier Hernández</td>
       </tr>
       <tr>
         <td class="mono">07/05/26 13:40</td>
@@ -763,14 +710,12 @@
         <td>Rocío Cruz</td>
         <td>#4710 · CDMX → GDL</td>
         <td class="num">$200.00</td>
-        <td class="ck">Sí</td>
         <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-act">Activo</td>
-        <td>Javier Hernández</td>
       </tr>
       <tr class="more">
-        <td colspan="10">56 gastos activos adicionales · ver páginas siguientes</td>
+        <td colspan="8">56 gastos activos adicionales · ver páginas siguientes</td>
       </tr>
 
     </tbody>
@@ -786,16 +731,15 @@
 
 <!-- ===================== Annotations (screen only) ===================== -->
 <div class="annotations">
-  <h3>Notas sobre este mockup V1</h3>
-  <p>Este es el formato propuesto del PDF del periodo que reemplaza la Orden de Compra impresa de Oracle. Reflejos clave:</p>
+  <h3>Notas sobre este mockup V1 (versión simplificada)</h3>
+  <p>Este PDF reemplaza la Orden de Compra impresa de Oracle. Versión simplificada — solo lo mínimo viable:</p>
   <ul>
-    <li><strong>Encabezado de metadata</strong>: 6 campos (sucursal, categorías, método de pago, estatus, <em>planes creados por</em>, <em>generado por</em>). T-01 y T-02 cubiertos.</li>
-    <li><strong>Resumen del periodo</strong>: total + 3 cortes mínimos (categoría, estatus de facturación, estatus de viaje). Sin las 4 tablas pivote del mockup pre-pivot — esas viven en V2 dashboard.</li>
-    <li><strong>Deducibilidad real (22.1%)</strong> y <strong>reembolsable (Fin+Cie)</strong> son cortes derivados que responden directamente a los JTBD de auditoría interna y tesorería.</li>
-    <li><strong>Detalle expense-centric</strong>: 10 columnas incluyendo las 3 nuevas de T-04 (folio fiscal SAT, estatus de viaje, responsable del plan). Agrupado por estatus de viaje (Comprobables vs En curso), sin page-break.</li>
-    <li><span class="open">Por definir</span> Cantidad de filas por página antes de paginar (mockup muestra 7+5; real puede ser ~25-30 por página A4 horizontal).</li>
-    <li><span class="open">Por definir</span> Si Tesorería quiere el detalle completo en el PDF o un export aparte cuando supere N páginas (umbral).</li>
-    <li><span class="open">Por validar con Auditoría interna</span> Si "Deducibilidad real %" en el resumen es útil o ruidoso.</li>
+    <li><strong>Encabezado en una línea</strong>: sucursal · planes creados por · generado por (T-02 cubierto). Periodo en el pill al lado del título. Sin tabla de metadata.</li>
+    <li><strong>Resumen</strong>: total del periodo + 2 cortes (facturación y viaje). Sin "por categoría" — se infiere del detalle. Sin métricas derivadas — viven en V2 dashboard.</li>
+    <li><strong>Detalle</strong>: 8 columnas. Quitadas vs draft anterior: "Ticket" (redundante con folio SAT) y "Responsable plan" (el encabezado ya lo dice). Agrupado por estatus de viaje (Comprobables vs En curso), sin page-break.</li>
+    <li><span class="open">Por definir</span> Cantidad de filas por página antes de paginar (mockup muestra 7+5; real ~25-30 por página A4 horizontal).</li>
+    <li><span class="open">Por definir</span> Si Tesorería quiere el detalle completo o un export aparte cuando supere N páginas.</li>
+    <li><span class="open">Por validar con Auditoría interna y Tesorería</span> Si este resumen es suficiente o piden algún corte más.</li>
   </ul>
 </div>
 
