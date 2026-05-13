@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reporte de Gastos — Mockup V1 · Paquetexpress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --uv-green: #00b341;
+    --uv-green-deep: #008a31;
+    --uv-green-soft: #e9f6ee;
+    --ink: #0e1116;
+    --ink-soft: #2a2f37;
+    --muted: #6a7280;
+    --muted-soft: #9aa3ad;
+    --rule: #dde1e6;
+    --rule-soft: #ecedf0;
+    --bg-pg: #eef0f3;
+    --paper: #ffffff;
+    --row-zebra: #f8fafa;
+    --hl-pending: #fff4e5;
+    --hl-pending-ink: #a35a00;
+    --hl-ok: #e9f6ee;
+    --hl-ok-ink: #006c25;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg-pg);
+    color: var(--ink);
+    font-family: 'Geist', -apple-system, system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    padding: 24px 16px 80px;
+  }
+
+  /* Doc header (screen-only context bar) */
+  .doc-meta {
+    max-width: 297mm;
+    margin: 0 auto 16px;
+    padding: 10px 16px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    letter-spacing: 0.04em;
+  }
+  .doc-meta strong { color: var(--ink); font-weight: 500; }
+  .doc-meta .actions { display: flex; gap: 16px; }
+  .doc-meta .actions a { color: var(--uv-green-deep); text-decoration: none; border-bottom: 1px dotted var(--uv-green-deep); }
+
+  /* === PAGE === */
+  /* A4 landscape: 297mm × 210mm */
+  .pdf-page {
+    width: 297mm;
+    min-height: 210mm;
+    margin: 0 auto;
+    background: var(--paper);
+    padding: 14mm 16mm 14mm;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    position: relative;
+    font-size: 10.5px;
+    line-height: 1.45;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+  @media print {
+    body { background: white; padding: 0; }
+    .pdf-page { box-shadow: none; margin: 0; width: 100%; min-height: 0; padding: 0; }
+    .doc-meta { display: none; }
+  }
+
+  /* ===== Brand row ===== */
+  .brand-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--uv-green);
+    margin-bottom: 14px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .uvicuo-mark {
+    width: 28px;
+    height: 28px;
+    background: var(--uv-green);
+    border-radius: 50%;
+    position: relative;
+  }
+  .uvicuo-mark::after {
+    content: "";
+    position: absolute;
+    inset: 7px 5px 7px 11px;
+    border-bottom: 3px solid white;
+    border-right: 3px solid white;
+    transform: rotate(45deg) translate(-1px, -2px);
+  }
+  .uvicuo-name {
+    font-family: 'Geist', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--uv-green);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .doc-id {
+    text-align: right;
+    font-family: 'Geist Mono', monospace;
+    font-size: 9.5px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+  }
+  .doc-id strong { color: var(--ink); font-weight: 500; }
+
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+  }
+  h1.report-title {
+    font-family: 'Geist', sans-serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+  }
+  .period-pill {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    background: var(--uv-green-soft);
+    border: 1px solid var(--uv-green);
+    padding: 4px 10px;
+    border-radius: 3px;
+  }
+
+  /* ===== Metadata table ===== */
+  .meta-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    border: 1px solid var(--rule);
+    font-size: 10px;
+  }
+  .meta-table td {
+    padding: 6px 10px;
+    border: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .meta-table td.l {
+    background: #fafbfc;
+    width: 12%;
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-weight: 500;
+    text-align: right;
+  }
+  .meta-table td.v {
+    width: 21%;
+    color: var(--ink);
+  }
+  .meta-table td.v strong { font-weight: 500; }
+
+  /* ===== Hero total + summary in single bar ===== */
+  .summary-bar {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr 1fr 1fr;
+    gap: 0;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--uv-green);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .summary-block {
+    padding: 12px 14px 12px 16px;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 84px;
+  }
+  .summary-block:last-child { border-right: none; }
+  .summary-block .k {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .summary-block.hero {
+    background: linear-gradient(135deg, var(--uv-green) 0%, var(--uv-green-deep) 100%);
+    color: white;
+    padding: 14px 16px 12px 18px;
+  }
+  .summary-block.hero .k { color: rgba(255,255,255,0.85); }
+  .summary-block.hero .v {
+    font-family: 'Geist', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: white;
+    margin-top: 2px;
+  }
+  .summary-block.hero .sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.9);
+    margin-top: 6px;
+    font-family: 'Geist Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .summary-block.hero .sub strong {
+    font-weight: 600;
+    color: white;
+  }
+  .summary-block .row-mini {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    padding: 1.5px 0;
+  }
+  .summary-block .row-mini.tot {
+    border-top: 1px solid var(--rule);
+    margin-top: 3px;
+    padding-top: 4px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .summary-block .row-mini .num {
+    font-family: 'Geist Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 10px;
+  }
+  .summary-block .row-mini .dim-l {
+    color: var(--muted);
+    font-size: 10px;
+  }
+  .summary-block .row-mini .dim-l .accent { color: var(--uv-green-deep); font-weight: 500; }
+
+  /* ===== Section title ===== */
+  h2.section {
+    color: var(--ink);
+    font-family: 'Geist', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 10px 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  h2.section .hint {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+  }
+
+  /* ===== Detalle table ===== */
+  .detalle {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5px;
+    line-height: 1.4;
+  }
+  .detalle thead th {
+    text-align: left;
+    background: #f5f6f8;
+    color: var(--ink);
+    font-family: 'Geist', sans-serif;
+    font-weight: 600;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 7px 8px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  .detalle thead th.num { text-align: right; }
+  .detalle tbody td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--rule-soft);
+    color: var(--ink-soft);
+    vertical-align: top;
+  }
+  .detalle tbody tr:hover td { background: var(--row-zebra); }
+  .detalle tbody tr.zebra td { background: var(--row-zebra); }
+  .detalle .num {
+    text-align: right;
+    font-family: 'Geist Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .detalle .mono {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+  }
+  .detalle .mono.ok { color: var(--ink-soft); }
+  .detalle .dim { color: var(--muted-soft); }
+  .detalle .ck {
+    color: var(--uv-green-deep);
+    font-weight: 500;
+  }
+  .detalle .ck.no {
+    color: var(--muted-soft);
+    font-weight: 400;
+  }
+
+  /* Group header rows */
+  .detalle tr.group td {
+    background: white;
+    padding: 14px 8px 4px;
+    border-bottom: none;
+    border-top: 1.5px solid var(--ink);
+  }
+  .detalle tr.group:first-child td { border-top: none; padding-top: 4px; }
+  .detalle tr.group .gr-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .detalle tr.group .gr-name {
+    font-family: 'Geist', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .detalle tr.group .gr-name .tag {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-right: 8px;
+    background: var(--hl-ok);
+    color: var(--hl-ok-ink);
+  }
+  .detalle tr.group .gr-name .tag.curso {
+    background: var(--hl-pending);
+    color: var(--hl-pending-ink);
+  }
+  .detalle tr.group .gr-stat {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9.5px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .detalle tr.group .gr-stat strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* "More rows" indicator */
+  .detalle tr.more td {
+    text-align: center;
+    background: #fafbfc;
+    color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.04em;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    font-style: italic;
+  }
+
+  /* Status text tokens */
+  .v-act { color: var(--hl-pending-ink); font-weight: 500; }
+  .v-cie { color: var(--ink); font-weight: 500; }
+  .v-fin { color: var(--hl-ok-ink); font-weight: 500; }
+
+  .uid-cancel {
+    color: #b80012;
+    font-weight: 500;
+    margin-left: 4px;
+    font-size: 8.5px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ===== Footer ===== */
+  .pdf-footer {
+    margin-top: 18px;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .pdf-footer strong { color: var(--ink); font-weight: 500; }
+
+  /* ===== Annotation overlay (screen only) ===== */
+  .annotations {
+    max-width: 297mm;
+    margin: 24px auto 0;
+    padding: 20px 24px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .annotations h3 {
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 12px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .annotations h3::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: var(--uv-green);
+    border-radius: 50%;
+  }
+  .annotations ul { padding-left: 20px; margin-top: 8px; }
+  .annotations ul li { margin-bottom: 6px; }
+  .annotations .open {
+    background: var(--hl-pending);
+    color: var(--hl-pending-ink);
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-right: 4px;
+  }
+  @media print { .annotations { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- Screen-only context bar -->
+<div class="doc-meta">
+  <span><strong>Reporte de Gastos · V1 Mockup</strong> · Paquetexpress · 2026-05-12</span>
+  <span class="actions">
+    <a href="javascript:window.print()">Imprimir / Exportar PDF</a>
+  </span>
+</div>
+
+<!-- ===================== PAGE 1 ===================== -->
+<div class="pdf-page">
+
+  <!-- Brand row -->
+  <div class="brand-row">
+    <div class="brand">
+      <div class="uvicuo-mark"></div>
+      <div class="uvicuo-name">uvícuo</div>
+    </div>
+    <div class="doc-id">
+      <div><strong>Folio interno:</strong> RPT-2026-W19-MOC-001</div>
+      <div>Generado 08 may 2026 · 17:42</div>
+    </div>
+  </div>
+
+  <!-- Title row -->
+  <div class="title-row">
+    <h1 class="report-title">Reporte de gastos — Operación logística Mochis</h1>
+    <div class="period-pill">Periodo: 11 feb 2026 — 08 may 2026</div>
+  </div>
+
+  <!-- Metadata table -->
+  <table class="meta-table">
+    <tr>
+      <td class="l">Sucursal</td>
+      <td class="v"><strong>Los Mochis</strong> · Logística</td>
+      <td class="l">Categorías</td>
+      <td class="v">Combustible, Peajes y Estac., Casetas, Alimentos</td>
+      <td class="l">Método de pago</td>
+      <td class="v">Tarjeta + efectivo</td>
+    </tr>
+    <tr>
+      <td class="l">Estatus gastos</td>
+      <td class="v">Todos</td>
+      <td class="l">Planes creados por</td>
+      <td class="v"><strong>Javier Hernández</strong> (administrador de día)</td>
+      <td class="l">Generado por</td>
+      <td class="v">Javier Hernández</td>
+    </tr>
+  </table>
+
+  <!-- Summary bar: hero total + 3 cortes simples -->
+  <div class="summary-bar">
+    <!-- Hero -->
+    <div class="summary-block hero">
+      <div class="k">Total del periodo</div>
+      <div class="v">$38,221.80</div>
+      <div class="sub"><strong>25</strong> planes · <strong>76</strong> gastos · MXN</div>
+    </div>
+
+    <!-- Por categoría -->
+    <div class="summary-block">
+      <div class="k">Por categoría</div>
+      <div class="row-mini"><span class="dim-l">Combustible</span><span class="num">$25,500.00</span></div>
+      <div class="row-mini"><span class="dim-l">Peajes y estacionamiento</span><span class="num">$8,221.80</span></div>
+      <div class="row-mini"><span class="dim-l">Alimentos y bebidas</span><span class="num">$3,200.00</span></div>
+      <div class="row-mini"><span class="dim-l">Casetas (efectivo)</span><span class="num">$1,300.00</span></div>
+    </div>
+
+    <!-- Por estatus facturación -->
+    <div class="summary-block">
+      <div class="k">Por estatus de facturación</div>
+      <div class="row-mini"><span class="dim-l"><span class="accent">●</span> Con factura SAT</span><span class="num">$8,432.50</span></div>
+      <div class="row-mini"><span class="dim-l">Sin factura</span><span class="num">$29,789.30</span></div>
+      <div class="row-mini tot"><span class="dim-l">Deducibilidad real</span><span class="num">22.1%</span></div>
+    </div>
+
+    <!-- Por estatus viaje -->
+    <div class="summary-block">
+      <div class="k">Por estatus de viaje</div>
+      <div class="row-mini"><span class="dim-l v-fin">Finalizado</span><span class="num">$13,000.00</span></div>
+      <div class="row-mini"><span class="dim-l v-cie">En cierre</span><span class="num">$10,000.00</span></div>
+      <div class="row-mini"><span class="dim-l v-act">Activo</span><span class="num">$15,221.80</span></div>
+      <div class="row-mini tot"><span class="dim-l">Reembolsable (Fin+Cie)</span><span class="num">$23,000.00</span></div>
+    </div>
+  </div>
+
+  <!-- Detalle -->
+  <h2 class="section">
+    Detalle de gastos
+    <span class="hint">Ordenado por estatus de viaje · Comprobables primero</span>
+  </h2>
+
+  <table class="detalle">
+    <colgroup>
+      <col style="width: 9%" /><!-- fecha -->
+      <col style="width: 10%" /><!-- categoría -->
+      <col style="width: 12%" /><!-- empleado -->
+      <col style="width: 14%" /><!-- plan / ruta -->
+      <col style="width: 8%" /><!-- monto -->
+      <col style="width: 5%" /><!-- ticket -->
+      <col style="width: 5%" /><!-- factura -->
+      <col style="width: 17%" /><!-- folio SAT -->
+      <col style="width: 8%" /><!-- estatus viaje -->
+      <col style="width: 12%" /><!-- responsable -->
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Categoría</th>
+        <th>Empleado</th>
+        <th>Plan · Ruta</th>
+        <th class="num">Monto</th>
+        <th>Ticket</th>
+        <th>Factura</th>
+        <th>Folio fiscal SAT</th>
+        <th>Estatus viaje</th>
+        <th>Responsable plan</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- GROUP 1: Comprobables -->
+      <tr class="group">
+        <td colspan="10">
+          <div class="gr-flex">
+            <div class="gr-name"><span class="tag">Comprobables</span>Finalizado + En cierre</div>
+            <div class="gr-stat"><strong>15 gastos</strong> · 15 planes · <strong>$23,000.00</strong></div>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="mono">23/02/26 23:52</td>
+        <td>Combustible</td>
+        <td>Santiago Merino</td>
+        <td>#5103 · SLP → MTY</td>
+        <td class="num">$700.00</td>
+        <td class="ck">Sí</td>
+        <td class="ck">Sí</td>
+        <td class="mono ok">f9e8d7c6-b5a4-3210-fedc-ba0987654321</td>
+        <td class="v-fin">Finalizado</td>
+        <td>Christopher A.</td>
+      </tr>
+      <tr class="zebra">
+        <td class="mono">04/05/26 21:12</td>
+        <td>Combustible</td>
+        <td>Raúl G. Estrada</td>
+        <td>#4892 · GDL → MTY</td>
+        <td class="num">$1,322.11</td>
+        <td class="ck">Sí</td>
+        <td class="ck">Sí</td>
+        <td class="mono ok">a1b2c3d4-e5f6-7890-abcd-1234567890ef</td>
+        <td class="v-cie">En cierre</td>
+        <td>Coord. A · Mochis</td>
+      </tr>
+      <tr>
+        <td class="mono">05/05/26 08:59</td>
+        <td>Combustible</td>
+        <td>Raúl G. Estrada</td>
+        <td>#4892 · GDL → MTY</td>
+        <td class="num">$1,596.25</td>
+        <td class="ck">Sí</td>
+        <td class="ck no">No</td>
+        <td class="mono dim">—</td>
+        <td class="v-cie">En cierre</td>
+        <td>Coord. A · Mochis</td>
+      </tr>
+      <tr class="zebra">
+        <td class="mono">05/05/26 12:23</td>
+        <td>Peajes y estac.</td>
+        <td>Raúl G. Estrada</td>
+        <td>#4892 · GDL → MTY</td>
+        <td class="num">$1,729.50</td>
+        <td class="ck">Sí</td>
+        <td class="ck">Sí</td>
+        <td class="mono ok">7c8b9a0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d</td>
+        <td class="v-cie">En cierre</td>
+        <td>Coord. A · Mochis</td>
+      </tr>
+      <tr>
+        <td class="mono">06/05/26 06:14</td>
+        <td>Combustible</td>
+        <td>Pablo Flores</td>
+        <td>#5234 · MTY → MOCH</td>
+        <td class="num">$2,184.30</td>
+        <td class="ck">Sí</td>
+        <td class="ck">Sí</td>
+        <td class="mono ok">b3a2c1d0-9876-5432-1abc-def012345678</td>
+        <td class="v-fin">Finalizado</td>
+        <td>Javier Hernández</td>
+      </tr>
+      <tr class="zebra">
+        <td class="mono">06/05/26 14:02</td>
+        <td>Alimentos</td>
+        <td>Pablo Flores</td>
+        <td>#5234 · MTY → MOCH</td>
+        <td class="num">$340.50</td>
+        <td class="ck">Sí</td>
+        <td class="ck no">No</td>
+        <td class="mono dim">—</td>
+        <td class="v-fin">Finalizado</td>
+        <td>Javier Hernández</td>
+      </tr>
+      <tr>
+        <td class="mono">07/05/26 09:48</td>
+        <td>Combustible</td>
+        <td>Sebastián G.</td>
+        <td>#5341 · CHIH → MOCH</td>
+        <td class="num">$1,438.65</td>
+        <td class="ck">Sí</td>
+        <td class="ck">Sí</td>
+        <td class="mono ok">c23821bc-dd4d-4d64-80e9-6af7eddd9217</td>
+        <td class="v-fin">Finalizado</td>
+        <td>Javier Hernández</td>
+      </tr>
+      <tr class="more">
+        <td colspan="10">8 gastos comprobables adicionales · ver páginas siguientes</td>
+      </tr>
+
+      <!-- GROUP 2: En curso -->
+      <tr class="group">
+        <td colspan="10">
+          <div class="gr-flex">
+            <div class="gr-name"><span class="tag curso">En curso</span>Activo · pendiente de cierre</div>
+            <div class="gr-stat"><strong>61 gastos</strong> · 10 planes · <strong>$15,221.80</strong></div>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="mono">02/05/26 07:40</td>
+        <td>Peajes y estac.</td>
+        <td>Diego Galico</td>
+        <td>#4583 · CDMX interna</td>
+        <td class="num">$32.03</td>
+        <td class="ck no">No</td>
+        <td class="ck no">No</td>
+        <td class="mono dim">—</td>
+        <td class="v-act">Activo</td>
+        <td>Javier Hernández</td>
+      </tr>
+      <tr class="zebra">
+        <td class="mono">04/05/26 10:25</td>
+        <td>Peajes y estac.</td>
+        <td>Diego Galico</td>
+        <td>#4583 · CDMX interna</td>
+        <td class="num">$12.00</td>
+        <td class="ck no">No</td>
+        <td class="ck no">No</td>
+        <td class="mono dim">—</td>
+        <td class="v-act">Activo</td>
+        <td>Javier Hernández</td>
+      </tr>
+      <tr>
+        <td class="mono">05/05/26 05:35</td>
+        <td>Peajes y estac.</td>
+        <td>Diego Galico</td>
+        <td>#4583 · CDMX interna</td>
+        <td class="num">$116.00</td>
+        <td class="ck no">No</td>
+        <td class="ck no">No</td>
+        <td class="mono dim">—</td>
+        <td class="v-act">Activo</td>
+        <td>Javier Hernández</td>
+      </tr>
+      <tr class="zebra">
+        <td class="mono">07/05/26 08:37</td>
+        <td>Combustible</td>
+        <td>Rocío Cruz</td>
+        <td>#4710 · CDMX → GDL</td>
+        <td class="num">$817.30</td>
+        <td class="ck no">No</td>
+        <td class="ck no">No</td>
+        <td class="mono dim">—</td>
+        <td class="v-act">Activo</td>
+        <td>Javier Hernández</td>
+      </tr>
+      <tr>
+        <td class="mono">07/05/26 13:40</td>
+        <td>Caseta</td>
+        <td>Rocío Cruz</td>
+        <td>#4710 · CDMX → GDL</td>
+        <td class="num">$200.00</td>
+        <td class="ck">Sí</td>
+        <td class="ck no">No</td>
+        <td class="mono dim">—</td>
+        <td class="v-act">Activo</td>
+        <td>Javier Hernández</td>
+      </tr>
+      <tr class="more">
+        <td colspan="10">56 gastos activos adicionales · ver páginas siguientes</td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <!-- Footer -->
+  <div class="pdf-footer">
+    <span>Documento generado por <strong>Uvicuo</strong> · Confidencial · Solo uso interno y auditoría</span>
+    <span>Página 1 de 5 · RPT-2026-W19-MOC-001</span>
+  </div>
+
+</div>
+
+<!-- ===================== Annotations (screen only) ===================== -->
+<div class="annotations">
+  <h3>Notas sobre este mockup V1</h3>
+  <p>Este es el formato propuesto del PDF del periodo que reemplaza la Orden de Compra impresa de Oracle. Reflejos clave:</p>
+  <ul>
+    <li><strong>Encabezado de metadata</strong>: 6 campos (sucursal, categorías, método de pago, estatus, <em>planes creados por</em>, <em>generado por</em>). T-01 y T-02 cubiertos.</li>
+    <li><strong>Resumen del periodo</strong>: total + 3 cortes mínimos (categoría, estatus de facturación, estatus de viaje). Sin las 4 tablas pivote del mockup pre-pivot — esas viven en V2 dashboard.</li>
+    <li><strong>Deducibilidad real (22.1%)</strong> y <strong>reembolsable (Fin+Cie)</strong> son cortes derivados que responden directamente a los JTBD de auditoría interna y tesorería.</li>
+    <li><strong>Detalle expense-centric</strong>: 10 columnas incluyendo las 3 nuevas de T-04 (folio fiscal SAT, estatus de viaje, responsable del plan). Agrupado por estatus de viaje (Comprobables vs En curso), sin page-break.</li>
+    <li><span class="open">Por definir</span> Cantidad de filas por página antes de paginar (mockup muestra 7+5; real puede ser ~25-30 por página A4 horizontal).</li>
+    <li><span class="open">Por definir</span> Si Tesorería quiere el detalle completo en el PDF o un export aparte cuando supere N páginas (umbral).</li>
+    <li><span class="open">Por validar con Auditoría interna</span> Si "Deducibilidad real %" en el resumen es útil o ruidoso.</li>
+  </ul>
+</div>
+
+</body>
+</html>
