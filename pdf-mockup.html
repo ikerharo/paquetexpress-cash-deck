@@ -217,27 +217,46 @@
   }
   .period-pill .pill-lbl { color: var(--uv-green-deep); }
 
-  /* ===== Metadata line (simplified) ===== */
-  .meta-line {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 24px;
-    font-size: 10.5px;
-    color: var(--ink-soft);
+  /* ===== Filters block ===== */
+  .filters-block {
+    margin-bottom: 26px;
   }
-  .meta-line .lbl {
+  .filters-title {
     font-family: 'Geist Mono', monospace;
     font-size: 9px;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
     font-weight: 500;
-    margin-right: 4px;
+    margin-bottom: 10px;
   }
-  .meta-line strong { font-weight: 500; }
-  .meta-line .sep { color: var(--muted-soft); margin: 0 4px; }
+  .filters {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.5px;
+  }
+  .filters td {
+    padding: 5px 0;
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .filters td.l {
+    width: 14%;
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    padding-right: 12px;
+    padding-top: 7px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .filters td.v {
+    width: 36%;
+    color: var(--ink-soft);
+    padding-right: 28px;
+  }
+  .filters td.v strong { color: var(--ink); font-weight: 500; }
 
   /* ===== Hero total + summary in single bar ===== */
   .summary-bar {
@@ -533,14 +552,10 @@
 
   /* ===== Hero (sobrio · accent line) ===== */
   .hero-bar {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr;
     background: var(--paper);
     color: var(--ink);
     padding: 18px 0 20px 22px;
     margin-bottom: 22px;
-    align-items: center;
-    gap: 32px;
     border-left: 3px solid var(--uv-green);
   }
   .hero-block { display: flex; flex-direction: column; gap: 4px; }
@@ -815,43 +830,47 @@
     </div>
     <div class="doc-id">
       <div><strong>Folio interno:</strong> RPT-2026-04-MOC-001</div>
+      <div>Generado por <strong>Javier Hernández</strong> · 05 may 2026 17:42</div>
     </div>
   </div>
 
   <!-- Title row -->
   <div class="title-row">
     <h1 class="report-title">Reporte de gastos — Operación logística Mochis</h1>
-    <div class="pill-stack">
-      <div class="period-pill"><span class="pill-lbl">Periodo</span>01 abr — 30 abr 2026</div>
-      <div class="gen-pill"><span class="pill-lbl">Generado</span>05 may 2026 · 17:42</div>
-    </div>
+    <div class="period-pill"><span class="pill-lbl">Periodo</span>01 abr — 30 abr 2026</div>
   </div>
 
-  <!-- Metadata: single line, generous breathing room -->
-  <div class="meta-line">
-    <span><span class="lbl">Sucursal</span> <strong>Los Mochis</strong> · Logística</span>
-    <span class="sep">·</span>
-    <span><span class="lbl">Planes creados por</span> <strong>Javier Hernández</strong> · administrador de día</span>
-    <span class="sep">·</span>
-    <span><span class="lbl">Generado por</span> Javier Hernández</span>
+  <!-- Filtros aplicados -->
+  <div class="filters-block">
+    <div class="filters-title">Filtros aplicados</div>
+    <table class="filters">
+      <tr>
+        <td class="l">Sucursal</td>
+        <td class="v"><strong>Los Mochis</strong> · Logística</td>
+        <td class="l">Categorías</td>
+        <td class="v">Todas</td>
+      </tr>
+      <tr>
+        <td class="l">Planes creados por</td>
+        <td class="v"><strong>Javier Hernández</strong> · administrador de día</td>
+        <td class="l">Método de pago</td>
+        <td class="v">Todos</td>
+      </tr>
+      <tr>
+        <td class="l">Estatus de gastos</td>
+        <td class="v">Todos</td>
+        <td class="l">Estatus de viaje</td>
+        <td class="v">Todos</td>
+      </tr>
+    </table>
   </div>
 
-  <!-- Hero: total + 3 KPI mini -->
+  <!-- Hero: total + planes/gastos count -->
   <div class="hero-bar">
     <div class="hero-block">
       <div class="hero-k">Total del periodo</div>
       <div class="hero-v">$38,221.80</div>
       <div class="hero-sub"><strong>25</strong> planes · <strong>76</strong> gastos · MXN</div>
-    </div>
-    <div class="hero-stats">
-      <div class="stat-mini">
-        <span class="stat-k">Reembolsable</span>
-        <span class="stat-v">$23,000</span>
-      </div>
-      <div class="stat-mini">
-        <span class="stat-k">En curso</span>
-        <span class="stat-v">$15,222</span>
-      </div>
     </div>
   </div>
 
