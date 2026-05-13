@@ -542,7 +542,7 @@
   <!-- Detalle -->
   <h2 class="section">
     Detalle de gastos
-    <span class="hint">Ordenado por estatus de viaje · Comprobables primero</span>
+    <span class="hint">Una línea por gasto · ordenado por fecha (más reciente primero)</span>
   </h2>
 
   <table class="detalle">
@@ -569,35 +569,64 @@
       </tr>
     </thead>
     <tbody>
-
-      <!-- GROUP 1: Comprobables -->
-      <tr class="group">
-        <td colspan="8">
-          <div class="gr-flex">
-            <div class="gr-name"><span class="tag">Comprobables</span>Finalizado + En cierre</div>
-            <div class="gr-stat"><strong>15 gastos</strong> · 15 planes · <strong>$23,000.00</strong></div>
-          </div>
-        </td>
-      </tr>
-
       <tr>
-        <td class="mono">23/02/26 23:52</td>
+        <td class="mono">07/05/26 13:40</td>
+        <td>Caseta</td>
+        <td>Rocío Cruz</td>
+        <td>#4710 · CDMX → GDL</td>
+        <td class="num">$200.00</td>
+        <td class="ck no">No</td>
+        <td class="mono dim">—</td>
+        <td class="v-act">Activo</td>
+      </tr>
+      <tr class="zebra">
+        <td class="mono">07/05/26 09:48</td>
         <td>Combustible</td>
-        <td>Santiago Merino</td>
-        <td>#5103 · SLP → MTY</td>
-        <td class="num">$700.00</td>
+        <td>Sebastián G.</td>
+        <td>#5341 · CHIH → MOCH</td>
+        <td class="num">$1,438.65</td>
         <td class="ck">Sí</td>
-        <td class="mono ok">f9e8d7c6-b5a4-3210-fedc-ba0987654321</td>
+        <td class="mono ok">c23821bc-dd4d-4d64-80e9-6af7eddd9217</td>
+        <td class="v-fin">Finalizado</td>
+      </tr>
+      <tr>
+        <td class="mono">07/05/26 08:37</td>
+        <td>Combustible</td>
+        <td>Rocío Cruz</td>
+        <td>#4710 · CDMX → GDL</td>
+        <td class="num">$817.30</td>
+        <td class="ck no">No</td>
+        <td class="mono dim">—</td>
+        <td class="v-act">Activo</td>
+      </tr>
+      <tr class="zebra">
+        <td class="mono">06/05/26 14:02</td>
+        <td>Alimentos</td>
+        <td>Pablo Flores</td>
+        <td>#5234 · MTY → MOCH</td>
+        <td class="num">$340.50</td>
+        <td class="ck no">No</td>
+        <td class="mono dim">—</td>
+        <td class="v-fin">Finalizado</td>
+      </tr>
+      <tr>
+        <td class="mono">06/05/26 06:14</td>
+        <td>Combustible</td>
+        <td>Pablo Flores</td>
+        <td>#5234 · MTY → MOCH</td>
+        <td class="num">$2,184.30</td>
+        <td class="ck">Sí</td>
+        <td class="mono ok">b3a2c1d0-9876-5432-1abc-def012345678</td>
         <td class="v-fin">Finalizado</td>
       </tr>
       <tr class="zebra">
-        <td class="mono">04/05/26 21:12</td>
-        <td>Combustible</td>
+        <td class="mono">05/05/26 12:23</td>
+        <td>Peajes y estac.</td>
         <td>Raúl G. Estrada</td>
         <td>#4892 · GDL → MTY</td>
-        <td class="num">$1,322.11</td>
+        <td class="num">$1,729.50</td>
         <td class="ck">Sí</td>
-        <td class="mono ok">a1b2c3d4-e5f6-7890-abcd-1234567890ef</td>
+        <td class="mono ok">7c8b9a0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d</td>
         <td class="v-cie">En cierre</td>
       </tr>
       <tr>
@@ -611,68 +640,24 @@
         <td class="v-cie">En cierre</td>
       </tr>
       <tr class="zebra">
-        <td class="mono">05/05/26 12:23</td>
-        <td>Peajes y estac.</td>
-        <td>Raúl G. Estrada</td>
-        <td>#4892 · GDL → MTY</td>
-        <td class="num">$1,729.50</td>
-        <td class="ck">Sí</td>
-        <td class="mono ok">7c8b9a0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d</td>
-        <td class="v-cie">En cierre</td>
-      </tr>
-      <tr>
-        <td class="mono">06/05/26 06:14</td>
-        <td>Combustible</td>
-        <td>Pablo Flores</td>
-        <td>#5234 · MTY → MOCH</td>
-        <td class="num">$2,184.30</td>
-        <td class="ck">Sí</td>
-        <td class="mono ok">b3a2c1d0-9876-5432-1abc-def012345678</td>
-        <td class="v-fin">Finalizado</td>
-      </tr>
-      <tr class="zebra">
-        <td class="mono">06/05/26 14:02</td>
-        <td>Alimentos</td>
-        <td>Pablo Flores</td>
-        <td>#5234 · MTY → MOCH</td>
-        <td class="num">$340.50</td>
-        <td class="ck no">No</td>
-        <td class="mono dim">—</td>
-        <td class="v-fin">Finalizado</td>
-      </tr>
-      <tr>
-        <td class="mono">07/05/26 09:48</td>
-        <td>Combustible</td>
-        <td>Sebastián G.</td>
-        <td>#5341 · CHIH → MOCH</td>
-        <td class="num">$1,438.65</td>
-        <td class="ck">Sí</td>
-        <td class="mono ok">c23821bc-dd4d-4d64-80e9-6af7eddd9217</td>
-        <td class="v-fin">Finalizado</td>
-      </tr>
-      <tr class="more">
-        <td colspan="8">8 gastos comprobables adicionales · ver páginas siguientes</td>
-      </tr>
-
-      <!-- GROUP 2: En curso -->
-      <tr class="group">
-        <td colspan="8">
-          <div class="gr-flex">
-            <div class="gr-name"><span class="tag curso">En curso</span>Activo · pendiente de cierre</div>
-            <div class="gr-stat"><strong>61 gastos</strong> · 10 planes · <strong>$15,221.80</strong></div>
-          </div>
-        </td>
-      </tr>
-
-      <tr>
-        <td class="mono">02/05/26 07:40</td>
+        <td class="mono">05/05/26 05:35</td>
         <td>Peajes y estac.</td>
         <td>Diego Galico</td>
         <td>#4583 · CDMX interna</td>
-        <td class="num">$32.03</td>
+        <td class="num">$116.00</td>
         <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-act">Activo</td>
+      </tr>
+      <tr>
+        <td class="mono">04/05/26 21:12</td>
+        <td>Combustible</td>
+        <td>Raúl G. Estrada</td>
+        <td>#4892 · GDL → MTY</td>
+        <td class="num">$1,322.11</td>
+        <td class="ck">Sí</td>
+        <td class="mono ok">a1b2c3d4-e5f6-7890-abcd-1234567890ef</td>
+        <td class="v-cie">En cierre</td>
       </tr>
       <tr class="zebra">
         <td class="mono">04/05/26 10:25</td>
@@ -685,39 +670,28 @@
         <td class="v-act">Activo</td>
       </tr>
       <tr>
-        <td class="mono">05/05/26 05:35</td>
+        <td class="mono">02/05/26 07:40</td>
         <td>Peajes y estac.</td>
         <td>Diego Galico</td>
         <td>#4583 · CDMX interna</td>
-        <td class="num">$116.00</td>
+        <td class="num">$32.03</td>
         <td class="ck no">No</td>
         <td class="mono dim">—</td>
         <td class="v-act">Activo</td>
       </tr>
       <tr class="zebra">
-        <td class="mono">07/05/26 08:37</td>
+        <td class="mono">23/02/26 23:52</td>
         <td>Combustible</td>
-        <td>Rocío Cruz</td>
-        <td>#4710 · CDMX → GDL</td>
-        <td class="num">$817.30</td>
-        <td class="ck no">No</td>
-        <td class="mono dim">—</td>
-        <td class="v-act">Activo</td>
-      </tr>
-      <tr>
-        <td class="mono">07/05/26 13:40</td>
-        <td>Caseta</td>
-        <td>Rocío Cruz</td>
-        <td>#4710 · CDMX → GDL</td>
-        <td class="num">$200.00</td>
-        <td class="ck no">No</td>
-        <td class="mono dim">—</td>
-        <td class="v-act">Activo</td>
+        <td>Santiago Merino</td>
+        <td>#5103 · SLP → MTY</td>
+        <td class="num">$700.00</td>
+        <td class="ck">Sí</td>
+        <td class="mono ok">f9e8d7c6-b5a4-3210-fedc-ba0987654321</td>
+        <td class="v-fin">Finalizado</td>
       </tr>
       <tr class="more">
-        <td colspan="8">56 gastos activos adicionales · ver páginas siguientes</td>
+        <td colspan="8">64 gastos adicionales · ver páginas siguientes</td>
       </tr>
-
     </tbody>
   </table>
 
@@ -736,7 +710,7 @@
   <ul>
     <li><strong>Encabezado en una línea</strong>: sucursal · planes creados por · generado por (T-02 cubierto). Periodo en el pill al lado del título. Sin tabla de metadata.</li>
     <li><strong>Resumen</strong>: total del periodo + 2 cortes (facturación y viaje). Sin "por categoría" — se infiere del detalle. Sin métricas derivadas — viven en V2 dashboard.</li>
-    <li><strong>Detalle</strong>: 8 columnas. Quitadas vs draft anterior: "Ticket" (redundante con folio SAT) y "Responsable plan" (el encabezado ya lo dice). Agrupado por estatus de viaje (Comprobables vs En curso), sin page-break.</li>
+    <li><strong>Detalle</strong>: tabla plana, una línea por gasto, ordenada por fecha descendente. Sin sub-encabezados por estatus de viaje — el estatus va como columna en cada fila. 8 columnas. Estilo CSV.</li>
     <li><span class="open">Por definir</span> Cantidad de filas por página antes de paginar (mockup muestra 7+5; real ~25-30 por página A4 horizontal).</li>
     <li><span class="open">Por definir</span> Si Tesorería quiere el detalle completo o un export aparte cuando supere N páginas.</li>
     <li><span class="open">Por validar con Auditoría interna y Tesorería</span> Si este resumen es suficiente o piden algún corte más.</li>
