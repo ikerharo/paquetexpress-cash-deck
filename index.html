@@ -1,0 +1,2077 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>De cuatro documentos a una línea — Uvicuo × Paquetexpress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #efeae0;
+    --bg-dim: #e7e1d3;
+    --bg-deep: #ddd5c2;
+    --ink: #161513;
+    --ink-soft: #2e2c28;
+    --muted: #6f6a60;
+    --muted-soft: #8c8678;
+    --accent: #b84d2a;
+    --accent-deep: #8f3a1e;
+    --rule: #c9c2b2;
+    --rule-soft: #d8d2c2;
+    --paper-1: #f2ede2;
+    --paper-2: #ebe4d5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Geist', -apple-system, system-ui, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  /* Paper grain texture overlay — subtle, applied globally */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.08 0 0 0 0 0.07 0 0 0 0 0.05 0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 200px 200px;
+    pointer-events: none;
+    opacity: 0.55;
+    mix-blend-mode: multiply;
+    z-index: 50;
+  }
+
+  /* Deck container */
+  .deck {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 6vh 7vw 5vh;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 420ms cubic-bezier(.5,0,.2,1);
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+  }
+
+  /* When active, stagger children reveal */
+  .slide.active .reveal {
+    animation: rise 700ms cubic-bezier(.2,.7,.2,1) both;
+  }
+  .slide.active .reveal:nth-child(1) { animation-delay: 80ms; }
+  .slide.active .reveal:nth-child(2) { animation-delay: 160ms; }
+  .slide.active .reveal:nth-child(3) { animation-delay: 240ms; }
+  .slide.active .reveal:nth-child(4) { animation-delay: 320ms; }
+  .slide.active .reveal:nth-child(5) { animation-delay: 400ms; }
+  .slide.active .reveal:nth-child(6) { animation-delay: 480ms; }
+
+  @keyframes rise {
+    0%   { opacity: 0; transform: translateY(14px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Header on every slide */
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 14px;
+  }
+  .slide-header .left { display: flex; gap: 28px; align-items: baseline; }
+  .slide-header .num { color: var(--ink); font-weight: 500; }
+  .slide-header .section { color: var(--muted); }
+  .slide-header .right { color: var(--muted-soft); }
+
+  /* Main content area */
+  .slide-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 4vh 0 0;
+    min-height: 0;
+  }
+
+  /* Footer progress indicator */
+  .progress {
+    position: fixed;
+    left: 0; bottom: 0;
+    height: 2px;
+    background: var(--accent);
+    width: 0%;
+    transition: width 420ms cubic-bezier(.5,0,.2,1);
+    z-index: 100;
+  }
+
+  /* Hints */
+  .hint {
+    position: fixed;
+    right: 22px; bottom: 16px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--muted-soft);
+    text-transform: uppercase;
+    z-index: 60;
+  }
+  .hint kbd {
+    font-family: inherit;
+    padding: 2px 6px;
+    background: var(--bg-deep);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    margin: 0 2px;
+  }
+
+  /* Typography primitives */
+  .display {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .display em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+    color: var(--accent);
+  }
+  .serif-body {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 24;
+    font-weight: 400;
+    line-height: 1.35;
+  }
+  .eyebrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .small-caps {
+    font-family: 'Geist', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* ============== SLIDE 1 — TITLE ============== */
+  .s-title .slide-body {
+    justify-content: center;
+    gap: 3vh;
+  }
+  .s-title .eyebrow { font-size: 13px; }
+  .s-title h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+    font-weight: 400;
+    font-size: clamp(48px, 7.6vw, 128px);
+    line-height: 0.96;
+    letter-spacing: -0.025em;
+    max-width: 18ch;
+  }
+  .s-title h1 em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+    color: var(--accent);
+  }
+  .s-title .subtitle {
+    font-size: clamp(18px, 1.6vw, 26px);
+    color: var(--ink-soft);
+    max-width: 50ch;
+    line-height: 1.35;
+    font-weight: 400;
+  }
+  .s-title .meta {
+    display: flex;
+    gap: 36px;
+    margin-top: 2vh;
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .s-title .meta .dot {
+    width: 4px; height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 6px 2px 0;
+    vertical-align: middle;
+  }
+
+  /* ============== SLIDE 2 — EXEC TABLE ============== */
+  .s-exec .slide-body { gap: 3vh; }
+  .s-exec h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 40;
+    font-weight: 400;
+    font-size: clamp(36px, 4.2vw, 60px);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    max-width: 22ch;
+  }
+  .s-exec h2 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 96, "SOFT" 100, "WONK" 1;
+  }
+  .exec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1vh;
+    font-size: clamp(13px, 1.05vw, 17px);
+  }
+  .exec-table th, .exec-table td {
+    text-align: left;
+    padding: 22px 18px;
+    border-top: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .exec-table tr:last-child td { border-bottom: 1px solid var(--rule); }
+  .exec-table th {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    width: 16%;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 14px;
+  }
+  .exec-table thead th { border-top: none; }
+  .exec-table .area {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 24;
+    font-weight: 500;
+    font-size: clamp(16px, 1.25vw, 21px);
+    color: var(--ink);
+  }
+  .exec-table .as-is { color: var(--muted); width: 38%; }
+  .exec-table .to-be { color: var(--ink); width: 46%; }
+  .exec-table .to-be strong {
+    font-weight: 500;
+    background: linear-gradient(0deg, rgba(184,77,42,0.15) 0%, rgba(184,77,42,0.15) 40%, transparent 40%);
+  }
+
+  /* ============== SLIDE 3-5 — AS-IS CHAINS ============== */
+  .s-chain .slide-body {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 5vw;
+    align-items: start;
+  }
+  .s-chain .left { display: flex; flex-direction: column; gap: 2.4vh; }
+  .s-chain h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 40;
+    font-weight: 400;
+    font-size: clamp(32px, 3.6vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    max-width: 16ch;
+  }
+  .chain-steps {
+    list-style: none;
+    counter-reset: step;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .chain-steps li {
+    counter-increment: step;
+    padding: 14px 0 14px 44px;
+    border-bottom: 1px solid var(--rule-soft);
+    position: relative;
+    font-size: clamp(13px, 1.0vw, 16px);
+    line-height: 1.4;
+    color: var(--ink-soft);
+  }
+  .chain-steps li::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 0; top: 16px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .chain-steps li strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .chain-photos {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .chain-photos.dual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .chain-photo {
+    position: relative;
+    background: var(--paper-1);
+    padding: 10px 10px 0;
+    box-shadow: 0 1px 0 var(--rule), 0 16px 30px -22px rgba(22,21,19,0.45);
+    transform: rotate(-0.4deg);
+    transition: transform 300ms ease;
+  }
+  .chain-photo:nth-child(2) { transform: rotate(0.5deg); }
+  .chain-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: contrast(1.05) saturate(0.9);
+  }
+  .chain-photo .caption {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 4px 14px;
+    line-height: 1.45;
+  }
+  .chain-photo .caption .label {
+    color: var(--accent);
+    margin-right: 8px;
+  }
+
+  /* ============== SLIDE 6 — GAPS GRID ============== */
+  .s-gaps .slide-body { gap: 4vh; }
+  .s-gaps h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 40;
+    font-weight: 400;
+    font-size: clamp(32px, 3.6vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    max-width: 22ch;
+  }
+  .gaps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+    flex: 1;
+  }
+  .gap {
+    padding: 22px 22px 26px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+  }
+  .gap .num {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .gap .text {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 24;
+    font-size: clamp(14px, 1.1vw, 18px);
+    line-height: 1.32;
+    color: var(--ink);
+  }
+
+  /* ============== SLIDE 7 — HERO ============== */
+  .s-hero { background: var(--bg-dim); }
+  .s-hero .slide-body {
+    justify-content: center;
+    align-items: center;
+    gap: 5vh;
+    padding-top: 0;
+  }
+  .s-hero .hero-headline {
+    text-align: center;
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+    font-weight: 400;
+    font-size: clamp(48px, 7vw, 116px);
+    line-height: 0.96;
+    letter-spacing: -0.025em;
+    max-width: 18ch;
+  }
+  .s-hero .hero-headline em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+    color: var(--accent);
+  }
+  .hero-diagram {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 4vw;
+    align-items: center;
+    width: 100%;
+    max-width: 1300px;
+    margin-top: 2vh;
+  }
+  .hero-four {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .hero-doc {
+    background: var(--paper-1);
+    border: 1px solid var(--rule);
+    padding: 14px 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transform: rotate(-0.6deg);
+    box-shadow: 0 8px 18px -14px rgba(22,21,19,0.4);
+  }
+  .hero-doc:nth-child(2) { transform: rotate(0.7deg); }
+  .hero-doc:nth-child(3) { transform: rotate(0.4deg); }
+  .hero-doc:nth-child(4) { transform: rotate(-0.5deg); }
+  .hero-doc .label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hero-doc .name {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 24;
+    font-size: 15px;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .hero-doc .lines {
+    display: flex; flex-direction: column; gap: 4px; margin-top: 4px;
+  }
+  .hero-doc .lines span {
+    height: 3px;
+    background: var(--rule);
+    border-radius: 1px;
+  }
+  .hero-doc .lines span:nth-child(1) { width: 92%; }
+  .hero-doc .lines span:nth-child(2) { width: 78%; }
+  .hero-doc .lines span:nth-child(3) { width: 86%; }
+
+  .hero-arrow {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 144, "WONK" 1;
+    font-size: clamp(48px, 6vw, 88px);
+    color: var(--accent);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1;
+    padding-bottom: 6px;
+  }
+  .hero-line {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 26px 28px;
+    box-shadow: 0 30px 60px -30px rgba(22,21,19,0.55);
+  }
+  .hero-line .label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .hero-line .title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 30;
+    font-size: 22px;
+    line-height: 1.15;
+    color: #f7f3e9;
+    margin-bottom: 18px;
+  }
+  .hero-line .dims {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 24px;
+    border-top: 1px solid rgba(247,243,233,0.18);
+    padding-top: 16px;
+  }
+  .hero-line .dim {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .hero-line .dim .k {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .hero-line .dim .v {
+    font-family: 'Geist', sans-serif;
+    font-size: 12px;
+    color: #f7f3e9;
+    line-height: 1.3;
+    opacity: 0.85;
+  }
+
+  /* ============== SLIDE 8 — CSV TABLE ============== */
+  .s-csv .slide-body { gap: 3vh; }
+  .s-csv h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 40;
+    font-weight: 400;
+    font-size: clamp(28px, 3.2vw, 46px);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    max-width: 26ch;
+  }
+  .csv-caption {
+    color: var(--muted);
+    font-size: clamp(13px, 1vw, 16px);
+    max-width: 80ch;
+    line-height: 1.5;
+  }
+  .csv-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Geist Mono', monospace;
+    font-size: clamp(10px, 0.85vw, 13px);
+    line-height: 1.45;
+  }
+  .csv-table thead th {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    padding: 10px 10px;
+    border-bottom: 2px solid var(--ink);
+    text-align: left;
+    vertical-align: bottom;
+  }
+  .csv-table tbody td {
+    padding: 9px 10px;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+    color: var(--ink-soft);
+  }
+  .csv-table tbody tr.gasto-start td {
+    border-top: 1px solid var(--rule);
+  }
+  .csv-table .type {
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .csv-table .type-base { color: var(--ink); }
+  .csv-table .type-iva { color: var(--accent); }
+  .csv-table .type-ieps { color: var(--accent); }
+  .csv-table .type-no { color: var(--muted); }
+  .csv-table .uuid {
+    color: var(--muted);
+    font-size: 0.9em;
+  }
+  .csv-table .empty {
+    color: var(--muted-soft);
+    font-style: italic;
+  }
+  .csv-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .csv-legend {
+    display: flex;
+    gap: 24px;
+    margin-top: 1vh;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .csv-legend .item { display: flex; align-items: center; gap: 8px; }
+  .csv-legend .swatch { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ============== SLIDE 9 — V1 ELEMENTS ============== */
+  .s-build .slide-body { gap: 4vh; }
+  .s-build h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 40;
+    font-weight: 400;
+    font-size: clamp(32px, 3.6vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    max-width: 22ch;
+  }
+  .build-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1.45fr 1fr;
+    gap: 22px;
+    flex: 1;
+  }
+  .build-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+  }
+  .build-card.big {
+    background: var(--bg-dim);
+    border-top: 3px solid var(--accent);
+    padding: 28px 28px 26px;
+  }
+  .build-card.small {
+    border-top: 2px solid var(--ink);
+    padding: 20px 4px 0;
+    gap: 12px;
+  }
+  .build-card .num {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 1;
+    line-height: 1;
+    color: var(--accent);
+    font-style: italic;
+  }
+  .build-card.big .num { font-size: clamp(48px, 5vw, 72px); }
+  .build-card.small .num { font-size: clamp(34px, 3vw, 46px); }
+  .build-card .name {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 36;
+    line-height: 1.15;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .build-card.big .name { font-size: clamp(20px, 1.8vw, 28px); }
+  .build-card.small .name { font-size: clamp(15px, 1.2vw, 19px); }
+  .build-card .desc {
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .build-card.big .desc { font-size: clamp(13px, 1.05vw, 16px); color: var(--ink-soft); }
+  .build-card.small .desc { font-size: clamp(11px, 0.9vw, 14px); color: var(--muted); }
+  .build-card .tag-wip {
+    align-self: flex-start;
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 4px 10px;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    font-weight: 500;
+  }
+  .build-card .head-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  /* ============== SLIDE 10 — AUTOAPROBACIÓN ============== */
+  .s-auto .slide-body { gap: 3vh; }
+  .s-auto h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 40;
+    font-weight: 400;
+    font-size: clamp(28px, 3.4vw, 46px);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    max-width: 22ch;
+  }
+  .s-auto h2 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 96, "SOFT" 100, "WONK" 1;
+  }
+  .auto-split {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 5vw;
+    flex: 1;
+    align-items: start;
+  }
+  .auto-col h3 {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .rules { display: flex; flex-direction: column; gap: 16px; }
+  .rule {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    align-items: baseline;
+  }
+  .rule .badge {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    background: var(--bg-deep);
+    color: var(--ink);
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .rule .badge.ok { background: #2a4f3a; color: #ecf3e8; }
+  .rule .badge.warn { background: var(--accent); color: var(--bg); }
+  .rule .text {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 24;
+    font-size: clamp(13px, 1vw, 17px);
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  .rule .text .accent { color: var(--accent); font-style: italic; }
+  .anomaly-box {
+    background: var(--bg-dim);
+    border: 1px solid var(--rule);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .anomaly-box .h {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 36;
+    font-size: clamp(17px, 1.4vw, 22px);
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .anomaly-box .p {
+    font-size: clamp(12px, 0.95vw, 15px);
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  .anomaly-box .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 12px 0 0;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .anomaly-box .stat .big {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 144, "SOFT" 40;
+    font-size: 48px;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .anomaly-box .stat .lbl {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ============== SLIDE 11-12 — USE CASES ============== */
+  .s-cases .slide-body { gap: 3vh; }
+  .s-cases h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 40;
+    font-weight: 400;
+    font-size: clamp(30px, 3.4vw, 46px);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    max-width: 26ch;
+  }
+  .cases-grid {
+    display: grid;
+    gap: 24px;
+    flex: 1;
+  }
+  .cases-grid.two { grid-template-columns: 1fr 1fr; }
+  .cases-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .case {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border-top: 1px solid var(--ink);
+    padding-top: 18px;
+  }
+  .case .name {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 36;
+    font-size: clamp(15px, 1.2vw, 20px);
+    line-height: 1.2;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .case .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .case .col h4 {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+    font-weight: 500;
+  }
+  .case .col.hoy h4 { color: var(--muted); }
+  .case .col.man h4 { color: var(--accent); }
+  .case ol {
+    list-style: none;
+    counter-reset: cs;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .case ol li {
+    counter-increment: cs;
+    font-size: clamp(11px, 0.88vw, 14px);
+    line-height: 1.4;
+    padding-left: 18px;
+    position: relative;
+  }
+  .case ol li::before {
+    content: counter(cs);
+    position: absolute; left: 0;
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    color: var(--accent);
+    top: 2px;
+  }
+  .case .col.hoy li { color: var(--muted); }
+  .case .col.man li { color: var(--ink-soft); }
+
+  /* ============== SLIDE 13-14 — GAINS ============== */
+  .s-gains .slide-body { gap: 3vh; }
+  .s-gains h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 40;
+    font-weight: 400;
+    font-size: clamp(32px, 3.6vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    max-width: 22ch;
+  }
+  .s-gains h2 em {
+    font-style: italic;
+    color: var(--accent);
+    font-variation-settings: "opsz" 96, "SOFT" 100, "WONK" 1;
+  }
+  .gains-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(13px, 1.05vw, 17px);
+  }
+  .gains-table thead th {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    text-align: left;
+    padding: 0 18px 14px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .gains-table thead th:nth-child(1) { width: 26%; }
+  .gains-table thead th:nth-child(2) { width: 36%; }
+  .gains-table thead th:nth-child(3) { width: 38%; color: var(--accent); }
+  .gains-table tbody td {
+    padding: 22px 18px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .gains-table .dim {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 24;
+    font-size: clamp(15px, 1.2vw, 19px);
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .gains-table .asis { color: var(--muted); }
+  .gains-table .tobe { color: var(--ink); }
+  .gains-table .tobe strong {
+    font-weight: 500;
+    background: linear-gradient(0deg, rgba(184,77,42,0.18) 0%, rgba(184,77,42,0.18) 38%, transparent 38%);
+  }
+
+  /* ============== SLIDE 15 — ENABLERS ============== */
+  .s-enablers .slide-body { gap: 4vh; }
+  .s-enablers h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 40;
+    font-weight: 400;
+    font-size: clamp(32px, 3.6vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    max-width: 22ch;
+  }
+  .enablers {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 28px;
+    flex: 1;
+  }
+  .enabler {
+    background: var(--bg-dim);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: relative;
+    border-top: 3px solid var(--accent);
+  }
+  .enabler .num {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 1;
+    font-size: 72px;
+    line-height: 0.9;
+    color: var(--ink);
+    font-style: italic;
+  }
+  .enabler .h {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 36;
+    font-size: clamp(18px, 1.55vw, 26px);
+    line-height: 1.18;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .enabler .p {
+    font-size: clamp(13px, 1vw, 16px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .enabler .signal {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    margin-top: auto;
+  }
+
+  /* ============== SLIDE 16 — V2 ============== */
+  .s-v2 .slide-body {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 5vw;
+    align-items: center;
+  }
+  .s-v2 h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 40;
+    font-weight: 400;
+    font-size: clamp(32px, 3.6vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    margin-bottom: 3vh;
+  }
+  .v2-list {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .v2-item {
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .v2-item .k {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .v2-item .h {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 36;
+    font-size: clamp(17px, 1.4vw, 22px);
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .v2-item .p {
+    font-size: clamp(12px, 0.95vw, 15px);
+    line-height: 1.5;
+    color: var(--muted);
+  }
+  /* Dashboard mock */
+  .dashboard-mock {
+    background: var(--ink);
+    color: #f7f3e9;
+    padding: 26px;
+    box-shadow: 0 40px 80px -40px rgba(22,21,19,0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    transform: perspective(1500px) rotateY(-3deg) rotateX(2deg);
+  }
+  .dashboard-mock .dm-h {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(247,243,233,0.15);
+  }
+  .dashboard-mock .dm-h .t {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 36;
+    font-size: 17px;
+  }
+  .dashboard-mock .dm-h .filt {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.9;
+  }
+  .dashboard-mock .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .dashboard-mock .kpi {
+    background: rgba(247,243,233,0.04);
+    padding: 12px;
+    border-left: 2px solid var(--accent);
+  }
+  .dashboard-mock .kpi .l {
+    font-family: 'Geist Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(247,243,233,0.5);
+    margin-bottom: 4px;
+  }
+  .dashboard-mock .kpi .v {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 30;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .dashboard-mock .chart {
+    height: 80px;
+    background:
+      linear-gradient(to top, rgba(184,77,42,0.18) 0%, transparent 60%),
+      repeating-linear-gradient(to right, transparent 0 24px, rgba(247,243,233,0.06) 24px 25px);
+    border-bottom: 1px solid rgba(247,243,233,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  .dashboard-mock .chart::before {
+    content: "";
+    position: absolute;
+    inset: 10px 0 0;
+    background: linear-gradient(to right, transparent, var(--accent) 30%, var(--accent) 70%, transparent);
+    height: 1.5px;
+    top: 60%;
+    transform: translateY(-50%);
+    clip-path: polygon(0 60%, 8% 45%, 16% 55%, 24% 30%, 32% 40%, 40% 25%, 48% 35%, 56% 15%, 64% 28%, 72% 18%, 80% 22%, 88% 10%, 100% 14%, 100% 100%, 0 100%);
+  }
+  .dashboard-mock .chart::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, transparent 49%, var(--accent) 49%, var(--accent) 51%, transparent 51%);
+    background-size: 80px 80px;
+    opacity: 0.06;
+  }
+
+  /* ============== SLIDE 17 — NEXT STEPS ============== */
+  .s-next .slide-body { gap: 4vh; }
+  .s-next h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 96, "SOFT" 40;
+    font-weight: 400;
+    font-size: clamp(32px, 3.6vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    max-width: 22ch;
+  }
+  .next-list {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    border-top: 1px solid var(--ink);
+  }
+  .next-step {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 30px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  .next-step .n {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 1;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--accent);
+    font-style: italic;
+  }
+  .next-step .t {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 60;
+    font-size: clamp(20px, 1.8vw, 30px);
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .next-step .owner {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    align-self: center;
+    text-align: right;
+    max-width: 22ch;
+    line-height: 1.5;
+  }
+
+  /* ============== SLIDE 18 — CLOSING ============== */
+  .s-end { background: var(--ink); color: var(--bg); }
+  .s-end body::before { display: none; }
+  .s-end .slide-header { color: rgba(239,234,224,0.5); border-color: rgba(239,234,224,0.15); }
+  .s-end .slide-header .num { color: var(--bg); }
+  .s-end .slide-body {
+    justify-content: center;
+    align-items: flex-start;
+    gap: 4vh;
+  }
+  .s-end h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+    font-weight: 400;
+    font-size: clamp(48px, 7vw, 116px);
+    line-height: 0.94;
+    letter-spacing: -0.025em;
+    max-width: 18ch;
+    color: var(--bg);
+  }
+  .s-end h1 em {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+    color: var(--accent);
+  }
+  .s-end .seal {
+    margin-top: 4vh;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(239,234,224,0.2);
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(239,234,224,0.65);
+  }
+  .s-end .seal .dot {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  /* Print fallback */
+  @media print {
+    .slide {
+      position: relative;
+      opacity: 1 !important;
+      page-break-after: always;
+      pointer-events: auto;
+      height: 100vh;
+    }
+    .progress, .hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+<!-- ============== SLIDE 1 — TITLE ============== -->
+<section class="slide s-title active" data-index="1" data-section="Apertura">
+  <div class="slide-header">
+    <div class="left"><span class="num">01 / 18</span><span class="section">Apertura</span></div>
+    <div class="right">Uvicuo × Paquetexpress</div>
+  </div>
+  <div class="slide-body">
+    <div class="eyebrow reveal">Flujo de gastos en efectivo · Material de adopción</div>
+    <h1 class="reveal">De cuatro documentos por gasto a una sola <em>línea</em>.</h1>
+    <div class="subtitle reveal">AS-IS validado con auditoría interna · TO-BE propuesto para V1. Un solo principio reorganiza tesorería, contabilidad, operación y auditoría.</div>
+    <div class="meta reveal"><span><span class="dot"></span>Mayo 2026</span><span><span class="dot"></span>16 sucursales</span><span><span class="dot"></span>Validado 11 mayo</span></div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 2 — EXEC SUMMARY ============== -->
+<section class="slide s-exec" data-index="2" data-section="Resumen">
+  <div class="slide-header">
+    <div class="left"><span class="num">02 / 18</span><span class="section">Resumen ejecutivo</span></div>
+    <div class="right">Cuatro áreas, un mismo cambio</div>
+  </div>
+  <div class="slide-body">
+    <h2 class="reveal">Cada área hoy concilia manualmente entre fuentes desconectadas. <em>Una sola línea unificada</em> resuelve las cuatro.</h2>
+    <div class="reveal">
+      <table class="exec-table">
+        <thead>
+          <tr><th>Área</th><th>Hoy</th><th>Mañana con Uvicuo</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="area">Tesorería</td>
+            <td class="as-is">Recibe Orden de Compra impresa + vales + tickets + Excel paralelo por correo. Concilia. Paga lunes/martes.</td>
+            <td class="to-be">Recibe el <strong>PDF del periodo</strong> con totales y desglose contable. Sin papel, sin Excel paralelo. Posible pago continuo.</td>
+          </tr>
+          <tr>
+            <td class="area">Auditoría interna</td>
+            <td class="as-is">Arqueo manual sumando efectivo + reembolsos + vales + facturas en Excel. Cruza ticket↔factura en otro Excel.</td>
+            <td class="to-be">Reporte filtrable por fechas con <strong>folio fiscal SAT</strong> en cada línea. Arqueo se reduce a verificar contra efectivo contado.</td>
+          </tr>
+          <tr>
+            <td class="area">Operación</td>
+            <td class="as-is">Administrador valida 1×1 cada ticket (folio físico vs digital), Excel diario + papel, cierra viajes manualmente. ~8h/día.</td>
+            <td class="to-be">Autoaprobación maneja ~<strong>90% del volumen</strong> (factura↔gasto). El administrador procesa la cola de anomalías. ~30 min/día.</td>
+          </tr>
+          <tr>
+            <td class="area">Contabilidad · Oracle</td>
+            <td class="as-is">Recibe Excel + Orden de Compra impresa, concilia, pasa a Tesorería. Idas y vueltas semanales.</td>
+            <td class="to-be">Carga el <strong>reporte de Uvicuo directo</strong> a Oracle. Sin doble fuente, sin conciliación manual.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 3 — CADENA OPERATIVA ============== -->
+<section class="slide s-chain" data-index="3" data-section="AS-IS · Operativa">
+  <div class="slide-header">
+    <div class="left"><span class="num">03 / 18</span><span class="section">AS-IS · Cadena operativa</span></div>
+    <div class="right">Planeación → entrega → cierre</div>
+  </div>
+  <div class="slide-body">
+    <div class="left">
+      <div class="eyebrow reveal">Cadena 1 de 3</div>
+      <h2 class="reveal">El operador firma papel, el administrador duplica el papel en Excel.</h2>
+      <ol class="chain-steps reveal">
+        <li><strong>Logística</strong> manda por correo las "Salidas Preliminares" diarias con ruta, segmento, operadores y unidad.</li>
+        <li>El <strong>administrador de día</strong> entrega el efectivo al operador antes de salir, llenando un <strong>Vale Provisional físico</strong> por ruta. El operador firma.</li>
+        <li>En paralelo, el administrador lleva un <strong>Excel diario</strong> anotando cada entrega por categoría — duplica el vale en digital.</li>
+        <li>El <strong>administrador de noche</strong> hace lo mismo cuando el viaje arranca de noche o hay reasignación.</li>
+        <li>Al regreso, el administrador recibe los tickets físicos, los apila por operador y anota "lo comprobado del día" con folio físico.</li>
+        <li>El <strong>cierre operativo</strong> sucede al día siguiente — o hasta <strong>14 días</strong> después si hay casetas tardías (Sinaloa, Chihuahua).</li>
+      </ol>
+    </div>
+    <div class="chain-photos reveal">
+      <figure class="chain-photo">
+        <img src="./images/foto_10_vale_provisional_caja.jpeg" alt="Vale provisional de caja firmado por operador" />
+        <figcaption class="caption"><span class="label">Evidencia</span>Vale provisional de caja — uno físico firmado por ruta. Contiene casetas, montos, IVA y firma del operador.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 4 — CADENA CONTABLE ============== -->
+<section class="slide s-chain" data-index="4" data-section="AS-IS · Contable">
+  <div class="slide-header">
+    <div class="left"><span class="num">04 / 18</span><span class="section">AS-IS · Cadena contable</span></div>
+    <div class="right">Excel → Oracle → impresión → Tesorería</div>
+  </div>
+  <div class="slide-body">
+    <div class="left">
+      <div class="eyebrow reveal">Cadena 2 de 3</div>
+      <h2 class="reveal">Una Orden de Compra impresa viaja con vales y tickets anexados atrás, físicamente.</h2>
+      <ol class="chain-steps reveal">
+        <li>Al cierre semanal, <strong>Tesorería</strong> arma un Excel maestro a partir del Excel del administrador.</li>
+        <li>Sube ese Excel a <strong>Oracle</strong>, que genera automáticamente una Orden de Compra por sucursal y periodo.</li>
+        <li><strong>Imprime la Orden de Compra</strong> y le anexa físicamente atrás: todos los vales firmados + los tickets físicos de cada gasto.</li>
+        <li>Envía además por <strong>correo</strong> un Excel paralelo con la relación de gastos.</li>
+        <li><strong>Contabilidad</strong> recibe la Orden de Compra física + el Excel por correo. Filtra la cuenta de logística y arma su concentrado.</li>
+        <li>Contabilidad <strong>concilia el Excel con la Orden de Compra física</strong>, confirma con Tesorería, espera "ok".</li>
+        <li>Tesorería corporativa programa el pago para <strong>lunes/martes</strong> de la semana siguiente.</li>
+      </ol>
+    </div>
+    <div class="chain-photos dual reveal">
+      <figure class="chain-photo">
+        <img src="./images/foto_09_orden_compra_oracle_pag1.jpeg" alt="Orden de Compra de Oracle — página 1" />
+        <figcaption class="caption"><span class="label">Pag. 1</span>Orden de Compra de Oracle, impresa — encabezado.</figcaption>
+      </figure>
+      <figure class="chain-photo">
+        <img src="./images/foto_11_orden_compra_oracle_pag2.jpeg" alt="Orden de Compra de Oracle — página 2" />
+        <figcaption class="caption"><span class="label">Pag. 2</span>Detalle de líneas con cuentas contables.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 5 — CADENA AUDITORÍA ============== -->
+<section class="slide s-chain" data-index="5" data-section="AS-IS · Auditoría">
+  <div class="slide-header">
+    <div class="left"><span class="num">05 / 18</span><span class="section">AS-IS · Cadena de auditoría</span></div>
+    <div class="right">Arqueo manual del fondo fijo</div>
+  </div>
+  <div class="slide-body">
+    <div class="left">
+      <div class="eyebrow reveal">Cadena 3 de 3</div>
+      <h2 class="reveal">El arqueo se suma a mano. Cinco fuentes deben coincidir contra un fondo fijo de seis cifras.</h2>
+      <ol class="chain-steps reveal">
+        <li><strong>Auditoría interna</strong> llega sin previo aviso y cuenta físicamente billetes y monedas del fondo.</li>
+        <li>Lo que no es efectivo, lo <strong>soporta con documentos</strong>: reembolsos enviados, reembolsos pendientes, vales y facturas en curso.</li>
+        <li><strong>Suman todo a mano</strong> en Excel: efectivo + reembolsos + vales + facturas = debería igualar el fondo fijo. Si hay diferencia se reporta como faltante.</li>
+        <li>Cruzan <strong>ticket ↔ factura SAT</strong> en otro Excel — pero el folio del ticket no es identificador fiscal: nunca se valida el XML real.</li>
+        <li>El reporte impreso se anexa a la <strong>póliza física</strong> y se archiva en bodega — puede pedirlo el SAT años después.</li>
+      </ol>
+    </div>
+    <div class="chain-photos dual reveal">
+      <figure class="chain-photo">
+        <img src="./images/foto_12_excel_arqueo_fondo_fijo_pag1.png" alt="Arqueo Excel página 1" />
+        <figcaption class="caption"><span class="label">Arqueo</span>Excel manual — fondo fijo $431,620, efectivo contado $103,000.</figcaption>
+      </figure>
+      <figure class="chain-photo">
+        <img src="./images/foto_13_excel_arqueo_fondo_fijo_pag2.png" alt="Arqueo Excel página 2" />
+        <figcaption class="caption"><span class="label">Desglose</span>Vales, facturas en curso y reembolsos pendientes.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 6 — GAPS ============== -->
+<section class="slide s-gaps" data-index="6" data-section="AS-IS · Síntesis">
+  <div class="slide-header">
+    <div class="left"><span class="num">06 / 18</span><span class="section">AS-IS · Síntesis</span></div>
+    <div class="right">Ocho fricciones</div>
+  </div>
+  <div class="slide-body">
+    <div class="reveal">
+      <div class="eyebrow">El sistema actual, en una página</div>
+      <h2>Ocho fricciones sostienen el costo invisible del proceso de hoy.</h2>
+    </div>
+    <div class="gaps-grid reveal">
+      <div class="gap"><span class="num">G1</span><span class="text">Excel y papel describen lo mismo, sin garantía de coincidir.</span></div>
+      <div class="gap"><span class="num">G2</span><span class="text">Sumas en celdas sin fórmula — errores invisibles, reimpresiones constantes.</span></div>
+      <div class="gap"><span class="num">G3</span><span class="text">El folio del ticket no comprueba nada fiscalmente. La empresa no sabe cuánto está timbrando.</span></div>
+      <div class="gap"><span class="num">G4</span><span class="text">Orden de Compra impresa + Excel paralelo describen el mismo gasto. Contabilidad concilia ambos.</span></div>
+      <div class="gap"><span class="num">G5</span><span class="text">El arqueo se suma a mano. No hay vista consolidada en tiempo real.</span></div>
+      <div class="gap"><span class="num">G6</span><span class="text">Planes en estado "Planeado" que nunca se activan ocupan espacio para siempre.</span></div>
+      <div class="gap"><span class="num">G7</span><span class="text">El ticket físico es evidencia única. Si se pierde, no hay respaldo.</span></div>
+      <div class="gap"><span class="num">G8</span><span class="text">Facturas tardías (hasta 14 días) obligan a validar con tickets, no con SAT.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 7 — HERO ============== -->
+<section class="slide s-hero" data-index="7" data-section="TO-BE · Principio rector">
+  <div class="slide-header">
+    <div class="left"><span class="num">07 / 18</span><span class="section">TO-BE · Principio rector</span></div>
+    <div class="right">El cambio de fondo</div>
+  </div>
+  <div class="slide-body">
+    <div class="eyebrow reveal" style="text-align:center">El TO-BE en una idea</div>
+    <h2 class="hero-headline reveal">Una <em>línea</em> reemplaza cuatro documentos.</h2>
+    <div class="hero-diagram reveal">
+      <div class="hero-four">
+        <div class="hero-doc">
+          <div class="label">Hoy 1</div>
+          <div class="name">Excel del administrador</div>
+          <div class="lines"><span></span><span></span><span></span></div>
+        </div>
+        <div class="hero-doc">
+          <div class="label">Hoy 2</div>
+          <div class="name">Vale provisional firmado</div>
+          <div class="lines"><span></span><span></span><span></span></div>
+        </div>
+        <div class="hero-doc">
+          <div class="label">Hoy 3</div>
+          <div class="name">Orden de Compra impresa</div>
+          <div class="lines"><span></span><span></span><span></span></div>
+        </div>
+        <div class="hero-doc">
+          <div class="label">Hoy 4</div>
+          <div class="name">Excel paralelo a Tesorería</div>
+          <div class="lines"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+      <div class="hero-arrow">→</div>
+      <div class="hero-line">
+        <div class="label">Mañana · 1 línea por gasto</div>
+        <div class="title">Un único dato estructurado que viaja con cuatro dimensiones.</div>
+        <div class="dims">
+          <div class="dim"><div class="k">Contable</div><div class="v">Cuenta, monto, IVA, IEPS, tipo de línea, RFC emisor</div></div>
+          <div class="dim"><div class="k">Operativa</div><div class="v">Plan, ruta, segmento, operadores, móvil, caseta</div></div>
+          <div class="dim"><div class="k">Fiscal</div><div class="v">Folio fiscal SAT, total factura, estatus cancelación</div></div>
+          <div class="dim"><div class="k">Control</div><div class="v">Estatus viaje, gasto, autoaprobación, aprobador</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 8 — CSV CONCRETO ============== -->
+<section class="slide s-csv" data-index="8" data-section="TO-BE · La línea, en concreto">
+  <div class="slide-header">
+    <div class="left"><span class="num">08 / 18</span><span class="section">TO-BE · La línea, en concreto</span></div>
+    <div class="right">CSV Uvicuo → Oracle</div>
+  </div>
+  <div class="slide-body">
+    <div class="reveal">
+      <div class="eyebrow">Lo que Uvicuo ya hace internamente</div>
+      <h2>Cada gasto entra al sistema ya descompuesto en su origen — con folio fiscal SAT desde el primer momento.</h2>
+    </div>
+    <div class="reveal">
+      <table class="csv-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Categoría</th>
+            <th>Tipo de línea</th>
+            <th class="num">Monto</th>
+            <th>Plan de gasto</th>
+            <th>Vehículo</th>
+            <th>Folio fiscal SAT</th>
+            <th>RFC emisor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Ejemplo A: combustible con desglose -->
+          <tr class="gasto-start">
+            <td>09-04-2026</td>
+            <td>Combustible</td>
+            <td class="type type-base">GASTO_BASE</td>
+            <td class="num">$1,398.68</td>
+            <td>Raul W14</td>
+            <td>ECO10_AUDI</td>
+            <td class="uuid">c452ec2c…f49</td>
+            <td>SLV001208MX8</td>
+          </tr>
+          <tr>
+            <td>09-04-2026</td>
+            <td>Combustible</td>
+            <td class="type type-iva">IVA_ACREDITABLE</td>
+            <td class="num">$223.79</td>
+            <td>Raul W14</td>
+            <td>ECO10_AUDI</td>
+            <td class="uuid">c452ec2c…f49</td>
+            <td>SLV001208MX8</td>
+          </tr>
+          <!-- Ejemplo B: alimentos con IEPS -->
+          <tr class="gasto-start">
+            <td>24-04-2026</td>
+            <td>Alimentos y Bebidas</td>
+            <td class="type type-ieps">IEPS</td>
+            <td class="num">$120.05</td>
+            <td>Plan - Pablo Flores</td>
+            <td>SEAT-ARONA</td>
+            <td class="uuid">99df3f43…d50</td>
+            <td>CCO8605231N4</td>
+          </tr>
+          <!-- Ejemplo C: caseta sin factura -->
+          <tr class="gasto-start">
+            <td>30-04-2026</td>
+            <td>Caseta</td>
+            <td class="type type-no">NO_DEDUCIBLE</td>
+            <td class="num">$200.00</td>
+            <td>Plan semanal</td>
+            <td>ECO10_AUDI</td>
+            <td class="empty">— sin factura —</td>
+            <td class="empty">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="csv-legend reveal">
+      <div class="item"><span class="swatch" style="background:var(--ink)"></span>Base contable</div>
+      <div class="item"><span class="swatch" style="background:var(--accent)"></span>Impuesto desglosado</div>
+      <div class="item"><span class="swatch" style="background:var(--muted)"></span>No deducible (sin factura)</div>
+    </div>
+    <div class="csv-caption reveal">Esta tabla es el dato estructurado que Uvicuo mantiene internamente. Cuando no hay factura — caseta en efectivo, viático no comprobable — la línea entra como NO_DEDUCIBLE sin frenar el flujo. <strong>La pieza siguiente</strong>: empaquetar este dato en un PDF que cada área pueda consumir.</div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 9 — V1 ELEMENTS ============== -->
+<section class="slide s-build" data-index="9" data-section="TO-BE · V1">
+  <div class="slide-header">
+    <div class="left"><span class="num">09 / 18</span><span class="section">TO-BE · Lo que se construye</span></div>
+    <div class="right">Cuatro elementos para V1</div>
+  </div>
+  <div class="slide-body">
+    <div class="reveal">
+      <div class="eyebrow">Versión 1 del producto</div>
+      <h2>El dato ya existe. Dos entregables centrales lo convierten en operación viva — dos filtros lo hacen accionable.</h2>
+    </div>
+    <div class="build-grid reveal">
+      <div class="build-card big">
+        <div class="num">i.</div>
+        <div class="name">PDF imprimible del periodo</div>
+        <div class="desc">Sustituye la Orden de Compra impresa de Oracle como soporte físico — para anexar a póliza, presentar a auditoría o sustentar tesorería. Empaqueta la información clave de cada gasto, incluido el folio fiscal SAT. <em>Qué columnas caben en la hoja se afina con el cliente.</em></div>
+      </div>
+      <div class="build-card big">
+        <div class="head-row">
+          <div class="num">ii.</div>
+          <span class="tag-wip">Definición en curso</span>
+        </div>
+        <div class="name">Resumen ejecutivo del periodo</div>
+        <div class="desc">Encabezado del PDF con totales y desglose del periodo — sustituye la lectura que hoy hace Tesorería armando su Excel. <strong>Pieza por definir con Auditoría interna y Tesorería:</strong> qué información va arriba, qué cortes son útiles, qué nivel de detalle se imprime.</div>
+      </div>
+      <div class="build-card small">
+        <div class="num">iii.</div>
+        <div class="name">Filtros a nivel plan</div>
+        <div class="desc">"Creado por" y "Activado por" — cada administrador monitorea su propio universo (día / noche).</div>
+      </div>
+      <div class="build-card small">
+        <div class="num">iv.</div>
+        <div class="name">Filtros a nivel gasto</div>
+        <div class="desc">"Creado por" (el operador) y "Aprobado por" (humano o sistema). Trazabilidad completa para auditoría.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 10 — AUTOAPROBACIÓN ============== -->
+<section class="slide s-auto" data-index="10" data-section="TO-BE · Autoaprobación">
+  <div class="slide-header">
+    <div class="left"><span class="num">10 / 18</span><span class="section">TO-BE · Autoaprobación</span></div>
+    <div class="right">El 90% se aprueba solo</div>
+  </div>
+  <div class="slide-body">
+    <div class="reveal">
+      <div class="eyebrow">Reglas validadas con auditoría interna · 11 mayo</div>
+      <h2>El sistema aprueba lo que coincide. El equipo se enfoca en <em>lo que no</em>.</h2>
+    </div>
+    <div class="auto-split reveal">
+      <div class="auto-col">
+        <h3>Reglas de autoaprobación</h3>
+        <div class="rules">
+          <div class="rule">
+            <span class="badge ok">Auto · OK</span>
+            <span class="text"><strong>Alimentos y bebidas</strong> — se aprueban automáticamente. Política PE no requiere factura.</span>
+          </div>
+          <div class="rule">
+            <span class="badge ok">Auto · OK</span>
+            <span class="text"><strong>Caseta</strong> — autoaprueba si el monto de la factura SAT coincide con el ticket del operador. Tolerancia <span class="accent">±$2-3</span>.</span>
+          </div>
+          <div class="rule">
+            <span class="badge">En espera</span>
+            <span class="text">Si <strong>no hay factura aún</strong> — queda como pendiente de comprobación. No se autoaprueba hasta que llegue.</span>
+          </div>
+          <div class="rule">
+            <span class="badge warn">Anomalía</span>
+            <span class="text">Si la factura <strong>no coincide</strong> o el folio del ticket aparece <strong>duplicado</strong> — entra a la cola de revisión humana.</span>
+          </div>
+        </div>
+      </div>
+      <div class="auto-col">
+        <h3>Cola de anomalías + planes</h3>
+        <div class="anomaly-box">
+          <div class="h">El administrador revisa solo lo que el sistema no resolvió.</div>
+          <div class="p">El tiempo del administrador se redirige hacia anomalías de validación, monitoreo de planes activos, y carga/activación de viajes. La validación 1×1 deja de existir.</div>
+          <div class="stat">
+            <span class="big">~90%</span>
+            <span class="lbl">Volumen estimado<br/>aprobado por sistema</span>
+          </div>
+        </div>
+        <div class="anomaly-box" style="margin-top: 14px;">
+          <div class="h">Cancelación automática de planes "Planeado".</div>
+          <div class="p">Planes que nunca se activan se cancelan tras N días — auditoría interna sugiere <strong>2 días</strong>. Adiós a los planes fantasma en sistema.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 11 — CASES PT 1 ============== -->
+<section class="slide s-cases" data-index="11" data-section="Casos de uso 1/2">
+  <div class="slide-header">
+    <div class="left"><span class="num">11 / 18</span><span class="section">Casos de uso · 1 de 2</span></div>
+    <div class="right">Tesorería · Auditoría externa</div>
+  </div>
+  <div class="slide-body">
+    <div class="reveal">
+      <div class="eyebrow">Cómo se siente el cambio en el día a día</div>
+      <h2>Reembolso semanal y póliza mensual — los dos flujos más visibles.</h2>
+    </div>
+    <div class="cases-grid two reveal">
+      <div class="case">
+        <div class="name">3.1 · Reembolso semanal a Tesorería</div>
+        <div class="split">
+          <div class="col hoy">
+            <h4>Hoy</h4>
+            <ol>
+              <li>Tesorería arma Excel desde Excel del administrador.</li>
+              <li>Sube Excel a Oracle, que genera la Orden de Compra.</li>
+              <li>Imprime la Orden de Compra + anexa vales y tickets.</li>
+              <li>Manda físico a Contabilidad + Excel por correo.</li>
+              <li>Contabilidad concilia ambos, espera "ok".</li>
+              <li>Pago lunes/martes de la semana siguiente.</li>
+            </ol>
+          </div>
+          <div class="col man">
+            <h4>Mañana</h4>
+            <ol>
+              <li>Tesorería filtra periodo y planes con viaje cerrado.</li>
+              <li>Descarga el reporte del periodo desde Uvicuo.</li>
+              <li>El reporte se carga directo a Oracle.</li>
+              <li>Tesorería corporativa procesa contra ese reporte.</li>
+              <li>Cadencia continua posible, no solo semanal.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="case">
+        <div class="name">3.2 · Auditoría externa pide póliza mensual</div>
+        <div class="split">
+          <div class="col hoy">
+            <h4>Hoy</h4>
+            <ol>
+              <li>Auditor pide póliza del mes X.</li>
+              <li>Auditoría interna va a la bodega física.</li>
+              <li>Busca el recopilador del mes correspondiente.</li>
+              <li>Lo presenta físicamente al auditor.</li>
+            </ol>
+          </div>
+          <div class="col man">
+            <h4>Mañana</h4>
+            <ol>
+              <li>Auditor pide póliza del mes X.</li>
+              <li>Auditoría interna filtra mes en Uvicuo y descarga PDF.</li>
+              <li>Presenta digital — o impreso si lo exigen.</li>
+              <li>Si pide factura SAT específica, está vinculada a la línea (XML accesible).</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 12 — CASES PT 2 ============== -->
+<section class="slide s-cases" data-index="12" data-section="Casos de uso 2/2">
+  <div class="slide-header">
+    <div class="left"><span class="num">12 / 18</span><span class="section">Casos de uso · 2 de 2</span></div>
+    <div class="right">Arqueo · Monitoreo · SAT</div>
+  </div>
+  <div class="slide-body">
+    <div class="reveal">
+      <div class="eyebrow">Cómo se siente el cambio en el día a día</div>
+      <h2>Arqueo, monitoreo del administrador, y trazabilidad fiscal hacia el SAT.</h2>
+    </div>
+    <div class="cases-grid three reveal">
+      <div class="case">
+        <div class="name">3.3 · Arqueo de fondo fijo</div>
+        <div class="split">
+          <div class="col hoy">
+            <h4>Hoy</h4>
+            <ol>
+              <li>Llegan sin aviso, cuentan efectivo.</li>
+              <li>Piden soportes al administrador.</li>
+              <li>Suman a mano en Excel: efectivo + soportes.</li>
+              <li>Reportan faltante si hay diferencia.</li>
+            </ol>
+          </div>
+          <div class="col man">
+            <h4>Mañana</h4>
+            <ol>
+              <li>Cuentan efectivo.</li>
+              <li>Filtran sucursal + fecha último arqueo.</li>
+              <li>Ven en plataforma: reembolsado / en cierre / activo.</li>
+              <li>Suman: efectivo + lo que dice Uvicuo.</li>
+              <li>Descargan reporte como evidencia.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="case">
+        <div class="name">3.4 · Administrador monitorea sus planes</div>
+        <div class="split">
+          <div class="col hoy">
+            <h4>Hoy</h4>
+            <ol>
+              <li>Solo ve planes filtrando.</li>
+              <li>No hay vista de validaciones pendientes.</li>
+              <li>Anomalías se descubren en el cierre.</li>
+            </ol>
+          </div>
+          <div class="col man">
+            <h4>Mañana</h4>
+            <ol>
+              <li>Filtra "Planes creados por: yo".</li>
+              <li>Ve % comprobado y cola de anomalías.</li>
+              <li>Procesa anomalías una por una.</li>
+              <li>Próximos cierres visibles.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="case">
+        <div class="name">3.5 · SAT pide trazabilidad de un gasto</div>
+        <div class="split">
+          <div class="col hoy">
+            <h4>Hoy</h4>
+            <ol>
+              <li>Buscan en bodega física el recopilador del mes.</li>
+              <li>Encuentran ticket adjunto.</li>
+              <li>Cruzan en otro Excel el folio fiscal de la factura.</li>
+              <li>Si la factura se canceló, se entera ahora.</li>
+            </ol>
+          </div>
+          <div class="col man">
+            <h4>Mañana</h4>
+            <ol>
+              <li>SAT da rango / monto / proveedor.</li>
+              <li>Filtran en Uvicuo.</li>
+              <li>La línea trae el folio fiscal; XML descargable.</li>
+              <li>Cancelaciones ya marcadas previamente.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 13 — GAINS TIME ============== -->
+<section class="slide s-gains" data-index="13" data-section="Lo que se gana · Tiempos">
+  <div class="slide-header">
+    <div class="left"><span class="num">13 / 18</span><span class="section">Lo que se gana · Tiempos</span></div>
+    <div class="right">Horas que regresan</div>
+  </div>
+  <div class="slide-body">
+    <div class="reveal">
+      <div class="eyebrow">Capacidad operativa liberada</div>
+      <h2>Horas que regresan al equipo, todos los días.</h2>
+    </div>
+    <div class="reveal">
+      <table class="gains-table">
+        <thead>
+          <tr>
+            <th>Tarea hoy manual</th>
+            <th>AS-IS</th>
+            <th>TO-BE con Uvicuo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="dim">Validación 1×1 de tickets</td>
+            <td class="asis">8 horas/día por administrador</td>
+            <td class="tobe"><strong>~30 minutos/día</strong> — solo anomalías + monitoreo</td>
+          </tr>
+          <tr>
+            <td class="dim">Recuperación de facturas</td>
+            <td class="asis">4-6 horas/día en portales de proveedores</td>
+            <td class="tobe"><strong>Eliminado</strong> — Uvicuo recupera automáticamente</td>
+          </tr>
+          <tr>
+            <td class="dim">Conciliación Tesorería ↔ Contabilidad</td>
+            <td class="asis">Semanal, idas y vueltas durante horas</td>
+            <td class="tobe"><strong>Eliminado</strong> — fuente única</td>
+          </tr>
+          <tr>
+            <td class="dim">Arqueo de auditoría interna</td>
+            <td class="asis">Suma manual en Excel, horas por sucursal</td>
+            <td class="tobe"><strong>Filtros + descarga</strong> en V1 — real-time en V2</td>
+          </tr>
+          <tr>
+            <td class="dim">Liquidación a operadores</td>
+            <td class="asis">Bloqueada hasta validación 1×1</td>
+            <td class="tobe"><strong>Inmediata</strong> con autoaprobación</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 14 — GAINS RISK ============== -->
+<section class="slide s-gains" data-index="14" data-section="Lo que se gana · Riesgos">
+  <div class="slide-header">
+    <div class="left"><span class="num">14 / 18</span><span class="section">Lo que se gana · Riesgos y control</span></div>
+    <div class="right">Lo que deja de existir</div>
+  </div>
+  <div class="slide-body">
+    <div class="reveal">
+      <div class="eyebrow">Riesgos sistémicos que se eliminan</div>
+      <h2>Categorías enteras de riesgo <em>dejan de existir</em>.</h2>
+    </div>
+    <div class="reveal">
+      <table class="gains-table">
+        <thead>
+          <tr>
+            <th>Dimensión de control</th>
+            <th>AS-IS</th>
+            <th>TO-BE con Uvicuo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="dim">Trazabilidad fiscal real</td>
+            <td class="asis">Nunca se valida el XML del SAT</td>
+            <td class="tobe">Cada gasto trae <strong>folio fiscal SAT + estatus</strong> (válida/cancelada)</td>
+          </tr>
+          <tr>
+            <td class="dim">Errores de cálculo</td>
+            <td class="asis">Posibles e "incuantificables"</td>
+            <td class="tobe"><strong>Eliminados</strong> — el sistema calcula</td>
+          </tr>
+          <tr>
+            <td class="dim">Auditoría</td>
+            <td class="asis">Mensual, por muestreo, reactiva</td>
+            <td class="tobe"><strong>Continua</strong>, 100% cubierta</td>
+          </tr>
+          <tr>
+            <td class="dim">Fraude por folio inventado</td>
+            <td class="asis">Real — el folio no comprueba nada</td>
+            <td class="tobe"><strong>Eliminado</strong> — match contra factura SAT</td>
+          </tr>
+          <tr>
+            <td class="dim">Pérdida de papelería</td>
+            <td class="asis">Real, documentos se traspapelan</td>
+            <td class="tobe">Backup <strong>digital nativo</strong></td>
+          </tr>
+          <tr>
+            <td class="dim">Visibilidad consolidada</td>
+            <td class="asis">Fragmentada en Excel + papel + Oracle</td>
+            <td class="tobe">Una sola fuente con <strong>evolución continua</strong> del producto</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 15 — ENABLERS ============== -->
+<section class="slide s-enablers" data-index="15" data-section="Activación V1">
+  <div class="slide-header">
+    <div class="left"><span class="num">15 / 18</span><span class="section">Activación V1</span></div>
+    <div class="right">Tres decisiones operativas</div>
+  </div>
+  <div class="slide-body">
+    <div class="reveal">
+      <div class="eyebrow">Para capturar el upside completo</div>
+      <h2>Tres habilitaciones convierten V1 en operación viva.</h2>
+    </div>
+    <div class="enablers reveal">
+      <div class="enabler">
+        <div class="num">i.</div>
+        <div class="h">Tesorería recibe el reporte digital de Uvicuo como fuente única.</div>
+        <div class="p">Deja de armar Excel paralelo, imprimir la Orden de Compra, anexar vales y tickets físicos. El reembolso se procesa contra el reporte del periodo. Posible cadencia continua, no solo semanal.</div>
+        <div class="signal">Auditoría interna validó apertura · 11 mayo</div>
+      </div>
+      <div class="enabler">
+        <div class="num">ii.</div>
+        <div class="h">Contabilidad carga el reporte de Uvicuo directo a Oracle.</div>
+        <div class="p">Reemplaza la carga manual de Excel. Elimina la conciliación entre Excel y Orden de Compra, y las idas y vueltas semanales para confirmar montos.</div>
+        <div class="signal">Decisión técnica TI · en agenda</div>
+      </div>
+      <div class="enabler">
+        <div class="num">iii.</div>
+        <div class="h">Una sola fuente de verdad para todo el flujo.</div>
+        <div class="p">Operación, contabilidad, tesorería y auditoría consultan el mismo dato en Uvicuo. Termina la divergencia entre fuentes y los errores de conciliación.</div>
+        <div class="signal">Habilitada por las dos anteriores</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 16 — V2 VISION ============== -->
+<section class="slide s-v2" data-index="16" data-section="Visión V2">
+  <div class="slide-header">
+    <div class="left"><span class="num">16 / 18</span><span class="section">Visión V2</span></div>
+    <div class="right">Lo que sigue después de V1</div>
+  </div>
+  <div class="slide-body">
+    <div>
+      <div class="eyebrow reveal">Después de la línea unificada</div>
+      <h2 class="reveal">El dato consolidado abre el paso al <em>dashboard vivo</em>.</h2>
+      <div class="v2-list reveal">
+        <div class="v2-item">
+          <div class="k">V2 · 01</div>
+          <div class="h">Dashboard en plataforma Uvicuo</div>
+          <div class="p">KPIs precalculados: total en curso, comprobado, facturado, % deducibilidad real, % anomalías. Filtros por fechas, administrador, sucursal.</div>
+        </div>
+        <div class="v2-item">
+          <div class="k">V2 · 02</div>
+          <div class="h">Costeo por ruta dentro del sistema</div>
+          <div class="p">El Excel manual de costeo histórico vive en Uvicuo. El dashboard muestra varianza vs presupuesto en tiempo real.</div>
+        </div>
+        <div class="v2-item">
+          <div class="k">V2 · 03</div>
+          <div class="h">Validación caseta cruzada vs caseta esperada</div>
+          <div class="p">Si se cobra una caseta fuera de la ruta planeada, emerge como anomalía. La relación caseta-por-ruta ya está mapeada.</div>
+        </div>
+      </div>
+    </div>
+    <div class="dashboard-mock reveal">
+      <div class="dm-h">
+        <div class="t">Gastos en efectivo · Sucursal Mochis</div>
+        <div class="filt">Abr · Logística · Día</div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="l">En curso</div><div class="v">$184k</div></div>
+        <div class="kpi"><div class="l">Comprobado</div><div class="v">$1.2M</div></div>
+        <div class="kpi"><div class="l">Facturado</div><div class="v">94%</div></div>
+        <div class="kpi"><div class="l">Anomalías</div><div class="v">3.1%</div></div>
+      </div>
+      <div class="chart"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 17 — NEXT STEPS ============== -->
+<section class="slide s-next" data-index="17" data-section="Próximos pasos">
+  <div class="slide-header">
+    <div class="left"><span class="num">17 / 18</span><span class="section">Próximos pasos</span></div>
+    <div class="right">Tres acciones inmediatas</div>
+  </div>
+  <div class="slide-body">
+    <div class="reveal">
+      <div class="eyebrow">Para arrancar V1</div>
+      <h2>Tres acciones inmediatas, tres conversaciones cortas.</h2>
+    </div>
+    <div class="next-list reveal">
+      <div class="next-step">
+        <div class="n">i.</div>
+        <div class="t">Validar con Tesorería la cadencia de envío — semanal contra continuo.</div>
+        <div class="owner">Tesorería PE<br/>+ Uvicuo</div>
+      </div>
+      <div class="next-step">
+        <div class="n">ii.</div>
+        <div class="t">Definir ventana de cancelación automática de planes "Planeado". Sugerencia: 2 días.</div>
+        <div class="owner">Auditoría interna<br/>+ Uvicuo</div>
+      </div>
+      <div class="next-step">
+        <div class="n">iii.</div>
+        <div class="t">Activar la validación caseta ↔ ruta usando la relación ya mapeada.</div>
+        <div class="owner">Auditoría interna<br/>+ Uvicuo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SLIDE 18 — CLOSING ============== -->
+<section class="slide s-end" data-index="18" data-section="Cierre">
+  <div class="slide-header">
+    <div class="left"><span class="num">18 / 18</span><span class="section">Cierre</span></div>
+    <div class="right">Uvicuo × Paquetexpress</div>
+  </div>
+  <div class="slide-body">
+    <div class="eyebrow reveal" style="color:var(--accent)">El TO-BE en una frase</div>
+    <h1 class="reveal">De cuatro documentos por gasto a una <em>línea</em>.<br/>El resto es consecuencia.</h1>
+    <div class="seal reveal">
+      <span>Material de adopción</span>
+      <span class="dot"></span>
+      <span>Mayo 2026</span>
+      <span class="dot"></span>
+      <span>Discovery validado 11 mayo</span>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="progress"></div>
+<div class="hint"><kbd>←</kbd> <kbd>→</kbd> navegar · <kbd>F</kbd> pantalla completa</div>
+
+<script>
+  (function() {
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const total = slides.length;
+    const progress = document.querySelector('.progress');
+    let idx = 0;
+
+    function goTo(i) {
+      if (i < 0 || i >= total) return;
+      slides[idx].classList.remove('active');
+      idx = i;
+      slides[idx].classList.add('active');
+      progress.style.width = ((idx + 1) / total * 100) + '%';
+      // Re-trigger animations by toggling class on next frame
+      const active = slides[idx];
+      active.querySelectorAll('.reveal').forEach(el => {
+        el.style.animation = 'none';
+        el.offsetHeight; // reflow
+        el.style.animation = '';
+      });
+    }
+    function next() { goTo(Math.min(idx + 1, total - 1)); }
+    function prev() { goTo(Math.max(idx - 1, 0)); }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault(); next();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault(); prev();
+      } else if (e.key === 'Home') {
+        goTo(0);
+      } else if (e.key === 'End') {
+        goTo(total - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+      }
+    });
+
+    // Click navigation: left half = prev, right half = next
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('a, button, kbd')) return;
+      const x = e.clientX;
+      if (x < window.innerWidth / 2) prev();
+      else next();
+    });
+
+    // Initial progress bar
+    progress.style.width = (1 / total * 100) + '%';
+  })();
+</script>
+
+</body>
+</html>
